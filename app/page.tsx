@@ -42,7 +42,7 @@ export default async function Home() {
         <Link href="/dashboard">Protected Page 🛡️</Link>
         <div id="divider"></div>
         <Link
-          href="https://github.com/mmvergara/nextjs-mongodb-prisma-auth-template"
+          href="https://github.com/luomi16/Employee-Management-Portal"
           target="_blank"
           rel="noreferrer noopener"
           id="github-repo-link"

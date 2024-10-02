@@ -1,20 +1,13 @@
-# Next.js MongoDB Prisma Auth Template
-
-[**`🌐 App Demo`**](https://nextjs-mongodb-prisma-auth-template.vercel.app/)
-
-<p align="center">
-<img src="remove_mee.png" width="450">
-</p>
-
-This is a template repository for building a Next.js application with MongoDB, Prisma, and Next Auth **V5**.
+# Employee Management Portal
+This repository build a Next.js application with MongoDB, Prisma, and Next Auth **V5** project.
 
 ## Features
 
-- 🚀 Next Auth **V5** with user registration, login, and logout functionality
-- 🚀 Protected Routes
-- 🚀 Next.js framework for server-side rendering and client-side rendering
-- 🚀 MongoDB for database storage
-- 🚀 Prisma for database ORM
+- Next Auth **V5** with user registration, login, and logout functionality
+- Protected Routes
+- Next.js framework for server-side rendering and client-side rendering
+- MongoDB for database storage
+- Prisma for database ORM
 
 ## Getting Started
 
@@ -33,11 +26,3 @@ npx prisma db push
 - `auth.config.ts` `&&` `app/lib/actions.ts` handles auth logic
 - `/lib/form-schemas.ts` zod for form validation
 - `middleware.ts` handles protected routes
-
-## Contributing
-
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
