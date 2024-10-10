@@ -17,16 +17,28 @@ export default function SignInPage() {
   };
 
   return (
-    <main>
-      <Link className="home-link" href="/">
-        ◄ Home
-      </Link>
-      <form className="main-container" action={handleFormSubmit}>
-        <h1 className="header-text">Sign In</h1>
-        <input name="email" type="email" placeholder="Email" />
-        <input name="password" type="password" placeholder="Password" />
-        <SubmitButton pendingText="Loggin in...">Login</SubmitButton>
-        <Link className="auth-link" href="/sign-up">
+    <main className="flex flex-col items-center mt-[10vh]">
+      <form
+        className="flex flex-col items-center bg-gray-900 p-8 w-full max-w-[500px] rounded-sm shadow-lg border-t-[10px] border-gray-400"
+        action={handleFormSubmit}
+      >
+        <h1 className="flex gap-2 items-center p-2 font-bold text-center text-white">
+          Sign In
+        </h1>
+        <input
+          className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+          name="email"
+          type="email"
+          placeholder="Email"
+        />
+        <input
+          className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+          name="password"
+          type="password"
+          placeholder="Password"
+        />
+        <SubmitButton pendingText="Logging in...">Login</SubmitButton>
+        <Link className="text-gray-400 hover:underline mt-4" href="/sign-up">
           Don't have an account? Sign Up
         </Link>
       </form>
