@@ -43,8 +43,12 @@ model Employee {
   userId        String      @db.ObjectId
   firstName     String
   lastName      String
-  department    String
-  position      String
+  image         String?
+  address       String
+  phone         String
+  ssn           String
+  birthday      DateTime
+  gender        Gender
   startDate     DateTime
 
   onboardingStatus OnboardingStatus // Enum: 'PENDING', 'COMPLETED'
@@ -109,6 +113,12 @@ model Account {
 enum Role {
   HR
   EMPLOYEE
+}
+
+enum Gender{
+  MALE
+  FEMALE
+  NOTTOANSWER
 }
 
 enum OnboardingStatus {
