@@ -2,12 +2,81 @@
 ### Do not make changes to this file directly
 
 
+type Address {
+  building: String
+  city: String
+  id: String
+  state: String
+  streetName: String
+  zip: String
+}
+
+type Document {
+  fileName: String
+  fileUrl: String
+  id: String
+}
+
+type EmergencyContact {
+  email: String
+  firstName: String
+  id: String
+  lastName: String
+  middleName: String
+  phone: String
+  relationship: String
+}
+
+type Employee {
+  address: [Address]
+  birthday: String
+  createdAt: String
+  documents: [Document]
+  emergencyContacts: [EmergencyContact]
+  firstName: String
+  gender: String
+  id: String
+  identity: String
+  lastName: String
+  middleName: String
+  phone: [PhoneNumber]
+  prefferedName: String
+  reference: Reference
+  ssn: String
+  updatedAt: String
+  workAuthorization: WorkAuthorization
+}
+
 type Mutation {
+  addWorkAuthorization(employeeId: String, endDate: String, startDate: String, visaType: String): WorkAuthorization
+  createEmployee(birthday: String, firstName: String, gender: String, identity: String, lastName: String, middleName: String, prefferedName: String, ssn: String): Employee
   createUser(email: String, password: String, username: String): User
+  updateEmployee(data: String, id: String): Employee
+  uploadDocument(employeeId: String, fileName: String, fileUrl: String): Document
+}
+
+type PhoneNumber {
+  cellPhone: String
+  id: String
+  workPhone: String
 }
 
 type Query {
+  employeeById(id: String): Employee
+  employeeDocuments(employeeId: String): [Document]
+  employees: [Employee]
+  userById(id: String): User
   users: [User]
+}
+
+type Reference {
+  email: String
+  firstName: String
+  id: String
+  lastName: String
+  middleName: String
+  phone: String
+  relationship: String
 }
 
 type User {
@@ -17,4 +86,12 @@ type User {
   image: String
   updatedAt: String
   username: String
+}
+
+type WorkAuthorization {
+  documents: [Document]
+  endDate: String
+  id: String
+  startDate: String
+  visaType: String
 }

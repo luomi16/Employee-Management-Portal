@@ -12,9 +12,9 @@ CLI
 
 对 schema.prisma 进行了更改，可以使用以下命令生成迁移文件:
 `npx prisma migrate dev`
+`npx prisma generate`
 
-直接连接数据库进行查询
-`npx prisma db execute`
+`npx prisma db push`
 
 TODO page:
 LoginPage (/sign-in): Shared by both employees and HR.
