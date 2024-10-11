@@ -1,10 +1,5 @@
-import { auth, signOut } from "@/auth";
+import { auth } from "@/auth";
 import Link from "next/link";
-import {
-  isRedirectError,
-  redirect,
-} from "next/dist/client/components/redirect";
-import { Container } from "react-bootstrap";
 
 export default async function Home() {
   const session = await auth();
@@ -18,7 +13,7 @@ export default async function Home() {
       {session?.user ? (
         <p className="mt-4 text-lg">Current User: {session?.user?.email}</p>
       ) : (
-        <Container>
+        <div>
           <p className="mt-4 text-lg">
             If you don't have an account, please{" "}
             <Link
@@ -39,7 +34,7 @@ export default async function Home() {
             </Link>
             .
           </p>
-        </Container>
+        </div>
       )}
     </section>
   );

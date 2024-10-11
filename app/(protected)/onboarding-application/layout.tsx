@@ -1,5 +1,4 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+// app/(protected)/onboarding-application/layout.tsx
 
 export default function OnboardingApplicationLayout({
   children,
@@ -7,10 +6,6 @@ export default function OnboardingApplicationLayout({
   children: React.ReactNode;
 }) {
   return (
-    <body className="bg-gray-900 text-white flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-grow p-8">{children}</main>
-      <Footer />
-    </body>
+    <main className="flex-grow p-8">{children}</main>
   );
 }

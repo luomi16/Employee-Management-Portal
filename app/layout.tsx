@@ -3,8 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { ApolloProvider } from "@apollo/client";
-import client from "./lib/apolloClient";
+// import { ApolloProvider } from "@apollo/client";
+// import client from "./lib/apolloClient";
 
 const inter = Inter({ subsets: ["latin"] });
 
