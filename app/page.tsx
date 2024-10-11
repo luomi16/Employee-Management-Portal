@@ -10,7 +10,7 @@ export default async function Home() {
   const session = await auth();
 
   return (
-    <main className="main-container flex flex-col justify-center items-center min-h-screen">
+    <section className="main-container">
       <h1 className="header-text text-3xl font-bold mt-4 text-center">
         Welcome to Employee Management System
       </h1>
@@ -41,6 +41,6 @@ export default async function Home() {
           </p>
         </Container>
       )}
-    </main>
+    </section>
   );
 }
