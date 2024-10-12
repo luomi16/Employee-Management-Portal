@@ -25,3 +25,4 @@ ProfilePage (/employee/profile, /hr/employee/[id]): Shared for viewing and editi
 DocumentsPage (/employee/documents, /hr/employee/[id]/documents): Shared document management.
 OnboardingPage (/employee/onboarding, /hr/employee/[id]/onboarding): Shared onboarding progress view.
 AdminPanel (/hr/admin): For HR to manage settings and permissions.
+

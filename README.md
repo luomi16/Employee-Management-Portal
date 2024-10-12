@@ -26,3 +26,21 @@ npx prisma db push
 - `auth.config.ts` `&&` `app/lib/actions.ts` handles auth logic
 - `/lib/form-schemas.ts` zod for form validation
 - `middleware.ts` handles protected routes
+
+## To Do List
+- employee
+    - signin, signup
+    - fix get personal info by current user id
+    - create, edit employee form
+    - document upload (visa management page)
+    - notification
+    - dashboard
+
+- hr
+    - search
+    - employee profile list page
+    - view employee profile
+    - sort employee by lastname
+    - manage employee onboardingstatus
+    - manage employee visa
+    - dashboard
