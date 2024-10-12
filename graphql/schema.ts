@@ -1,5 +1,5 @@
-// // schema.ts
-import { makeSchema, objectType, stringArg } from "nexus";
+// schema.ts
+import { makeSchema, objectType, stringArg, enumType, arg } from "nexus";
 import path from "path";
 import { UserResolvers } from "./resolvers"; // Import resolvers
 
@@ -21,14 +21,16 @@ const Employee = objectType({
   name: "Employee",
   definition(t) {
     t.string("id");
+    t.string("userId");
     t.string("firstName");
     t.string("lastName");
     t.string("middleName");
     t.string("prefferedName");
+    t.string("email");
     t.string("ssn");
     t.string("birthday");
-    t.string("gender");
-    t.string("identity");
+    t.field("gender", { type: "Gender" }); // Use the Gender enum
+    t.field("identity", { type: "Identity" }); // Use the Identity enum
     t.list.field("address", { type: Address });
     t.list.field("phone", { type: PhoneNumber });
     t.field("workAuthorization", { type: WorkAuthorization });
@@ -37,6 +39,7 @@ const Employee = objectType({
     t.list.field("documents", { type: Document });
     t.field("createdAt", { type: "String" });
     t.field("updatedAt", { type: "String" });
+    t.string("onboardingStatus"); // Add onboardingStatus if it's part of your schema
   },
 });
 
@@ -113,6 +116,18 @@ const Reference = objectType({
   },
 });
 
+// Define Gender Enum
+const Gender = enumType({
+  name: "Gender", // This should match the expected type in your GraphQL schema
+  members: ["MALE", "FEMALE", "NOTTOANSWER"],
+});
+
+// Define Identity Enum
+const Identity = enumType({
+  name: "Identity", // This should match the expected type in your GraphQL schema
+  members: ["CITIZEN", "GREENCARD", "OTHER"],
+});
+
 // Define Query type
 const Query = objectType({
   name: "Query",
@@ -168,12 +183,33 @@ const Mutation = objectType({
         lastName: stringArg(),
         middleName: stringArg(),
         prefferedName: stringArg(),
+        email: stringArg(),
         ssn: stringArg(),
         birthday: stringArg(),
-        gender: stringArg(),
-        identity: stringArg(),
+        gender: arg({ type: "Gender" }), // Use the Gender enum as an argument
+        identity: arg({ type: "Identity" }), // Use the Identity enum as an argument
+        userId: stringArg(), // Make sure this is defined
       },
-      resolve: UserResolvers.Mutation.createEmployee, // Resolver for creating an employee
+      // resolve: UserResolvers.Mutation.createEmployee, // Resolver for creating an employee
+      resolve: async (_parent, args, context) => {
+        return context.prisma.employee.create({
+          data: {
+            firstName: args.firstName,
+            lastName: args.lastName,
+            middleName: args.middleName,
+            prefferedName: args.prefferedName,
+            email: args.email,
+            ssn: args.ssn,
+            birthday: new Date(args.birthday),
+            gender: args.gender,
+            identity: args.identity,
+            onboardingStatus: "PENDING", // Provide a default value
+            user: {
+              connect: { id: args.userId }, // Connect with an existing user
+            },
+          },
+        });
+      },
     });
 
     t.field("updateEmployee", {
@@ -209,7 +245,20 @@ const Mutation = objectType({
 });
 
 export const schema = makeSchema({
-  types: [Query, Mutation, User, Employee, Address, PhoneNumber, WorkAuthorization, Document, EmergencyContact, Reference],
+  types: [
+    Query,
+    Mutation,
+    User,
+    Employee,
+    Address,
+    PhoneNumber,
+    WorkAuthorization,
+    Document,
+    EmergencyContact,
+    Reference,
+    Gender,  // Ensure enums are included
+    Identity, // Ensure enums are included
+  ],
   outputs: {
     schema: path.join(process.cwd(), "graphql", "schema.graphql"),
     typegen: path.join(

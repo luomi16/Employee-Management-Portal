@@ -1,4 +1,4 @@
-// // resolvers.ts
+// resolvers.ts
 
 import { PrismaClient, Gender, Identity, VisaType, OnboardingStatus } from "@prisma/client";
 import { hash } from "bcryptjs";
@@ -23,16 +23,18 @@ export const UserResolvers = {
     },
     // Resolver to get an employee by ID
     employeeById: async (_parent: any, args: { id: string }) => {
+      console.log(args.id);
+      console.log("resolver")
       return prisma.employee.findUnique({
         where: { id: args.id },
-        include: {
-          address: true,
-          phone: true,
-          workAuthorization: true,
-          emergencyContacts: true,
-          reference: true,
-          documents: true,
-        },
+        // include: {
+        //   address: true,
+        //   phone: true,
+        //   workAuthorization: true,
+        //   emergencyContacts: true,
+        //   reference: true,
+        //   documents: true,
+        // },
       });
     },
     // Resolver to get all documents of a specific employee
@@ -66,6 +68,7 @@ export const UserResolvers = {
         lastName: string;
         middleName?: string;
         prefferedName?: string;
+        email: string;
         ssn: string;
         birthday: string;
         gender: Gender;
@@ -79,6 +82,7 @@ export const UserResolvers = {
           lastName: args.lastName,
           middleName: args.middleName,
           prefferedName: args.prefferedName,
+          email: args.email,
           ssn: args.ssn,
           birthday: new Date(args.birthday),
           gender: args.gender,
@@ -90,6 +94,8 @@ export const UserResolvers = {
         },
       });
     },
+
+    
     // Resolver to update an employee
     updateEmployee: async (_parent: any, args: { id: string; data: any }) => {
       return prisma.employee.update({
@@ -97,6 +103,8 @@ export const UserResolvers = {
         data: args.data,
       });
     },
+
+
     // Resolver to add a work authorization to an employee
     addWorkAuthorization: async (
       _parent: any,

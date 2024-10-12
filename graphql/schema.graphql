@@ -32,24 +32,39 @@ type Employee {
   birthday: String
   createdAt: String
   documents: [Document]
+  email: String
   emergencyContacts: [EmergencyContact]
   firstName: String
-  gender: String
+  gender: Gender
   id: String
-  identity: String
+  identity: Identity
   lastName: String
   middleName: String
+  onboardingStatus: String
   phone: [PhoneNumber]
   prefferedName: String
   reference: Reference
   ssn: String
   updatedAt: String
+  userId: String
   workAuthorization: WorkAuthorization
+}
+
+enum Gender {
+  FEMALE
+  MALE
+  NOTTOANSWER
+}
+
+enum Identity {
+  CITIZEN
+  GREENCARD
+  OTHER
 }
 
 type Mutation {
   addWorkAuthorization(employeeId: String, endDate: String, startDate: String, visaType: String): WorkAuthorization
-  createEmployee(birthday: String, firstName: String, gender: String, identity: String, lastName: String, middleName: String, prefferedName: String, ssn: String): Employee
+  createEmployee(birthday: String, email: String, firstName: String, gender: Gender, identity: Identity, lastName: String, middleName: String, prefferedName: String, ssn: String, userId: String): Employee
   createUser(email: String, password: String, username: String): User
   updateEmployee(data: String, id: String): Employee
   uploadDocument(employeeId: String, fileName: String, fileUrl: String): Document

@@ -1,48 +1,45 @@
+// pages/personal-info.tsx
 "use client";
-import { auth } from "@/auth";
-import Link from "next/link";
-import { useQuery, gql } from "@apollo/client";
-import client from "../../lib/apolloClient";
 
-const GET_USERS = gql`
-  query GetUsers {
-    users {
-      id
-      username
-      email
-      createdAt
-      updatedAt
-    }
-  }
-`;
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { fetchEmployeeById } from "../../lib/redux/slices/employeeSlice";
+import { RootState, useAppDispatch } from "../../lib/redux/store";
 
 const PersonalInfoPage = () => {
-  // const session = await auth();
+  const dispatch = useAppDispatch();
+  const employee = useSelector((state: RootState) => state.employee.employee);
+  const status = useSelector((state: RootState) => state.employee.status);
+  const error = useSelector((state: RootState) => state.employee.error);
 
-  const { loading, error, data } = useQuery(GET_USERS, { client });
+  // Fetch employee by ID when the component mounts
+  useEffect(() => {
+    const employeeId = "6709c4e720e08f3c4a2a7aac"; // Example employee ID
+    dispatch(fetchEmployeeById(employeeId));
+    // console.log("employeeId",employeeId);
+  }, [dispatch]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (status === "loading") return <p>Loading...</p>;
+  if (status === "failed") return <p>Error: {error}</p>;
+
+  // console.log(employee)
 
   return (
     <section className="main-container">
-      {/* <h1 className="header-text text-3xl font-bold mt-4">
-        This is a personal info Page
-      </h1>
-      <p className="mt-4 text-lg">
-        Current User email: {session?.user?.email || "None"}
-      </p> */}
-      {/* <p className="mt-4 text-lg">Current User email</p> */}
-      <h1>User List</h1>
-      <ul>
-        {data.users.map((user: any) => (
-          <li key={user.id}>
-            <p>Username: {user.username}</p>
-            <p>Email: {user.email}</p>
-            <p>Created At: {user.createdAt}</p>
-          </li>
-        ))}
-      </ul>
+      <h1 className="header-text text-3xl font-bold mt-4">Personal Info</h1>
+      {employee ? (
+        <div className="mt-4 text-lg">
+          <p>First Name: {employee.firstName}</p>
+          <p>Last Name: {employee.lastName}</p>
+          <p>SSN: {employee.ssn}</p>
+          <p>Birthday: {employee.birthday}</p>
+          <p>Gender: {employee.gender}</p>
+          <p>identity: {employee.identity}</p>
+          <p>email: {employee.email}</p>
+        </div>
+      ) : (
+        <p>No employee data found.</p>
+      )}
     </section>
   );
 };

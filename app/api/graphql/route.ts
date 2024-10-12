@@ -20,8 +20,4 @@ export const handler = startServerAndCreateNextHandler(apolloServer, {
 export const GET = handler;
 export const POST = handler;
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+export const dynamic = 'force-dynamic';
