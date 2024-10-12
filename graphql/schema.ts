@@ -1,5 +1,13 @@
 // schema.ts
-import { makeSchema, objectType, stringArg, enumType, arg } from "nexus";
+import {
+  makeSchema,
+  objectType,
+  inputObjectType,
+  stringArg,
+  enumType,
+  arg,
+  list,
+} from "nexus";
 import path from "path";
 import { UserResolvers } from "./resolvers"; // Import resolvers
 
@@ -29,8 +37,8 @@ const Employee = objectType({
     t.string("email");
     t.string("ssn");
     t.string("birthday");
-    t.field("gender", { type: "Gender" }); // Use the Gender enum
-    t.field("identity", { type: "Identity" }); // Use the Identity enum
+    t.field("gender", { type: "Gender" });
+    t.field("identity", { type: "Identity" });
     t.list.field("address", { type: Address });
     t.list.field("phone", { type: PhoneNumber });
     t.field("workAuthorization", { type: WorkAuthorization });
@@ -39,7 +47,7 @@ const Employee = objectType({
     t.list.field("documents", { type: Document });
     t.field("createdAt", { type: "String" });
     t.field("updatedAt", { type: "String" });
-    t.string("onboardingStatus"); // Add onboardingStatus if it's part of your schema
+    t.string("onboardingStatus");
   },
 });
 
@@ -172,8 +180,19 @@ const Mutation = objectType({
         username: stringArg(),
         email: stringArg(),
         password: stringArg(),
+        image: stringArg(),
       },
       resolve: UserResolvers.Mutation.createUser, // Resolver for creating a user
+    });
+
+    // Define the signIn mutation
+    t.field("signIn", {
+      type: "User", // The type that will be returned (User type)
+      args: {
+        email: stringArg(), // Argument for email
+        password: stringArg(), // Argument for password
+      },
+      resolve: UserResolvers.Mutation.signIn,
     });
 
     t.field("createEmployee", {
@@ -189,27 +208,34 @@ const Mutation = objectType({
         gender: arg({ type: "Gender" }), // Use the Gender enum as an argument
         identity: arg({ type: "Identity" }), // Use the Identity enum as an argument
         userId: stringArg(), // Make sure this is defined
+        address: list(
+          arg({
+            type: "AddressInput", // Assuming you define the input type below
+          })
+        ),
+        phone: list(
+          arg({
+            type: "PhoneNumberInput", // Assuming you define the input type below
+          })
+        ),
+        reference: arg({
+          type: "ReferenceInput", // Assuming you define the input type below
+        }),
+        workAuthorization: arg({
+          type: "WorkAuthorizationInput", // Assuming you define the input type below
+        }),
+        documents: list(
+          arg({
+            type: "DocumentInput", // Assuming you define the input type below
+          })
+        ),
+        emergencyContacts: list(
+          arg({
+            type: "EmergencyContactInput", // Assuming you define the input type below
+          })
+        ),
       },
-      // resolve: UserResolvers.Mutation.createEmployee, // Resolver for creating an employee
-      resolve: async (_parent, args, context) => {
-        return context.prisma.employee.create({
-          data: {
-            firstName: args.firstName,
-            lastName: args.lastName,
-            middleName: args.middleName,
-            prefferedName: args.prefferedName,
-            email: args.email,
-            ssn: args.ssn,
-            birthday: new Date(args.birthday),
-            gender: args.gender,
-            identity: args.identity,
-            onboardingStatus: "PENDING", // Provide a default value
-            user: {
-              connect: { id: args.userId }, // Connect with an existing user
-            },
-          },
-        });
-      },
+      resolve: UserResolvers.Mutation.createEmployee, // Resolver for creating an employee
     });
 
     t.field("updateEmployee", {
@@ -244,6 +270,71 @@ const Mutation = objectType({
   },
 });
 
+// Define AddressInput type
+const AddressInput = inputObjectType({
+  name: "AddressInput",
+  definition(t) {
+    t.string("building");
+    t.string("streetName");
+    t.string("city");
+    t.string("state");
+    t.string("zip");
+  },
+});
+
+// Define PhoneNumberInput type
+const PhoneNumberInput = inputObjectType({
+  name: "PhoneNumberInput",
+  definition(t) {
+    t.string("cellPhone");
+    t.string("workPhone");
+  },
+});
+
+// Define ReferenceInput type
+const ReferenceInput = inputObjectType({
+  name: "ReferenceInput",
+  definition(t) {
+    t.string("firstName");
+    t.string("lastName");
+    t.string("middleName");
+    t.string("phone");
+    t.string("email");
+    t.string("relationship");
+  },
+});
+
+// Define WorkAuthorizationInput type
+const WorkAuthorizationInput = inputObjectType({
+  name: "WorkAuthorizationInput",
+  definition(t) {
+    t.string("visaType");
+    t.string("startDate");
+    t.string("endDate");
+    t.list.field("documents", { type: "DocumentInput" }); // nested documents
+  },
+});
+
+const DocumentInput = inputObjectType({
+  name: "DocumentInput",
+  definition(t) {
+    t.string("fileName");
+    t.string("fileUrl");
+  },
+});
+
+const EmergencyContactInput = inputObjectType({
+  name: "EmergencyContactInput",
+  definition(t) {
+    t.string("firstName");
+    t.string("lastName");
+    t.string("middleName");
+    t.string("phone");
+    t.string("email");
+    t.string("relationship");
+  },
+});
+
 export const schema = makeSchema({
   types: [
     Query,
@@ -256,8 +347,14 @@ export const schema = makeSchema({
     Document,
     EmergencyContact,
     Reference,
-    Gender,  // Ensure enums are included
-    Identity, // Ensure enums are included
+    Gender,
+    Identity,
+    AddressInput,
+    PhoneNumberInput,
+    ReferenceInput,
+    WorkAuthorizationInput,
+    DocumentInput,
+    EmergencyContactInput,
   ],
   outputs: {
     schema: path.join(process.cwd(), "graphql", "schema.graphql"),

@@ -5,62 +5,117 @@ import { signUpAction } from "@/lib/actions";
 import Link from "next/link";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
+import { useAppDispatch } from "./../lib/redux/store";
+import { signUpUser } from "./../lib/redux/slices/userSlice";
+import { useRouter } from "next/navigation";
+
+// Define the form values type
+interface FormValues {
+  username: string;
+  email: string;
+  password: string;
+}
+
 export default function SignUpPage() {
-  const handleFormSubmit = async (formData: FormData) => {
-    const formValues = {
-      username: formData.get("username") as string,
-      email: formData.get("email") as string,
-      password: formData.get("password") as string,
-    };
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
-    const { error } = await signUpSchema.safeParseAsync(formValues);
-    if (error) {
-      alert(error.issues[0].message);
-    }
+  // Specify the type for formValues
+  const handleFormSubmit = async (formValues: FormValues) => {
+    try {
+      // Validate form values with schema
+      const validationResult = await signUpSchema.safeParseAsync(formValues);
+      if (!validationResult.success) {
+        alert(validationResult.error.issues[0].message);
+        return; // Stop execution if validation fails
+      }
 
-    const res = await signUpAction(formValues);
-    if (res?.error) {
-      alert(res.error);
+      // If validation passes, proceed with sign up action
+      const res = await signUpAction(formValues);
+      if (res?.error) {
+        alert(res.error);
+        return; // Stop execution if sign-up fails
+      }
+
+      // Dispatch to Redux store to store user details
+      dispatch(
+        signUpUser({
+          email: formValues.email,
+          password: formValues.password,
+          username: formValues.username,
+        })
+      );
+
+      // Navigate to sign-in or dashboard after successful signup
+      router.push("/sign-in");
+    } catch (err) {
+      console.error("Sign-up error:", err);
+      alert("An error occurred during sign-up.");
     }
   };
 
   return (
     <main className="flex flex-col items-center mt-[10vh]">
-      <form
-        className="flex flex-col items-center bg-gray-900 p-8 w-full max-w-[500px] rounded-sm shadow-lg border-t-[10px] border-gray-400"
-        action={handleFormSubmit}
+      <Formik
+        initialValues={{ username: "", email: "", password: "" }}
+        onSubmit={handleFormSubmit}
       >
-        <h1 className="flex gap-2 items-center p-2 font-bold text-center">
-          Sign Up
-        </h1>
-        <p className="text-center text-sm text-gray-500">
-          Demo app, please don't use your real email or password
-        </p>
-        <input
-          className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
-          name="username"
-          type="text"
-          placeholder="Username"
-        />
-        <input
-          className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
-          name="email"
-          type="email"
-          placeholder="Email"
-        />
-        <input
-          className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
-          name="password"
-          type="password"
-          placeholder="Password"
-        />
-        <SubmitButton pendingText="Creating account...">
-          Create Account
-        </SubmitButton>
-        <Link className="text-gray-400 hover:underline mt-4" href="/sign-in">
-          Already have an account? Sign In
-        </Link>
-      </form>
+        {({ handleChange }) => (
+          <Form className="flex flex-col items-center bg-gray-900 p-8 w-full max-w-[500px] rounded-sm shadow-lg border-t-[10px] border-gray-400">
+            <h1 className="flex gap-2 items-center p-2 font-bold text-center">
+              Sign Up
+            </h1>
+            <p className="text-center text-sm text-gray-500">
+              Demo app, please don't use your real email or password
+            </p>
+            <Field
+              className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+              name="username"
+              type="text"
+              placeholder="Username"
+              onChange={handleChange}
+            />
+            <ErrorMessage
+              name="username"
+              component="div"
+              className="text-red-500"
+            />
+            <Field
+              className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+              name="email"
+              type="email"
+              placeholder="Email"
+              onChange={handleChange}
+            />
+            <ErrorMessage
+              name="email"
+              component="div"
+              className="text-red-500"
+            />
+            <Field
+              className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+              name="password"
+              type="password"
+              placeholder="Password"
+              onChange={handleChange}
+            />
+            <ErrorMessage
+              name="password"
+              component="div"
+              className="text-red-500"
+            />
+            <SubmitButton pendingText="Creating account...">
+              Create Account
+            </SubmitButton>
+            <Link
+              className="text-gray-400 hover:underline mt-4"
+              href="/sign-in"
+            >
+              Already have an account? Sign In
+            </Link>
+          </Form>
+        )}
+      </Formik>
       <div
         className="w-[70%] h-[2px] bg-gray-400 mt-4 rounded-full"
         id="divider"
@@ -68,3 +123,114 @@ export default function SignUpPage() {
     </main>
   );
 }
+
+// "use client";
+// import { signUpSchema } from "@/lib/form-schemas";
+// import { SubmitButton } from "@/components/SubmitButton";
+// import Link from "next/link";
+// import { Formik, Form, Field, ErrorMessage } from "formik";
+// import { useSelector } from "react-redux";
+// import { RootState,useAppDispatch } from "../lib/redux/store";
+// import { signUpUser } from "../lib//redux/slices/userSlice";
+// import { toFormikValidationSchema } from 'zod-formik-adapter';
+
+// export default function SignUpPage() {
+//   const dispatch = useAppDispatch();
+
+//    // Access Redux state
+//   const status = useSelector((state: RootState) => state.employee.status);
+//   const error = useSelector((state: RootState) => state.employee.error);
+
+// interface FormValues {
+//   username: string;
+//   email: string;
+//   password: string;
+// }
+
+//   const handleFormSubmit = async (formValues:FormValues) => {
+//     // Dispatch the signUpUser Redux action
+//     dispatch(signUpUser(formValues));
+//   };
+
+//   return (
+//     <main className="flex flex-col items-center mt-[10vh]">
+//       {/* Formik Form */}
+//       <Formik
+//         initialValues={{
+//           username: "",
+//           email: "",
+//           password: "",
+//         }}
+//         validationSchema={toFormikValidationSchema(signUpSchema)} // Zod validation with Formik
+//         onSubmit={handleFormSubmit}
+//       >
+//         {({ isSubmitting }) => (
+//           <Form
+//             className="flex flex-col items-center bg-gray-900 p-8 w-full max-w-[500px] rounded-sm shadow-lg border-t-[10px] border-gray-400"
+//           >
+//             <h1 className="flex gap-2 items-center p-2 font-bold text-center">
+//               Sign Up
+//             </h1>
+//             <p className="text-center text-sm text-gray-500">
+//               Demo app, please don't use your real email or password
+//             </p>
+
+//             {/* Username Field */}
+//             <Field
+//               className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+//               name="username"
+//               type="text"
+//               placeholder="Username"
+//             />
+//             <ErrorMessage
+//               name="username"
+//               component="div"
+//               className="text-red-500 text-sm"
+//             />
+
+//             {/* Email Field */}
+//             <Field
+//               className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+//               name="email"
+//               type="email"
+//               placeholder="Email"
+//             />
+//             <ErrorMessage
+//               name="email"
+//               component="div"
+//               className="text-red-500 text-sm"
+//             />
+
+//             {/* Password Field */}
+//             <Field
+//               className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+//               name="password"
+//               type="password"
+//               placeholder="Password"
+//             />
+//             <ErrorMessage
+//               name="password"
+//               component="div"
+//               className="text-red-500 text-sm"
+//             />
+
+//             {/* Submit Button */}
+//             <SubmitButton pendingText="Creating account...">
+//               {isSubmitting || status === "loading" ? "Creating account..." : "Create Account"}
+//             </SubmitButton>
+
+//             {/* Error message from Redux */}
+//             {error && <div className="text-red-500 mt-2">{error}</div>}
+
+//             <Link className="text-gray-400 hover:underline mt-4" href="/sign-in">
+//               Already have an account? Sign In
+//             </Link>
+//           </Form>
+//         )}
+//       </Formik>
+
+//       <div className="w-[70%] h-[2px] bg-gray-400 mt-4 rounded-full" id="divider" />
+//     </main>
+//   );
+// }
+

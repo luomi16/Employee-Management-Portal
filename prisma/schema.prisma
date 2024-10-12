@@ -108,7 +108,7 @@ model WorkAuthorization {
   visaType   VisaType // Enum for different visa types like H1B, F1, etc.
   startDate  DateTime?
   endDate    DateTime?
-  document   Document[] // List of work authorization related documents
+  documents   Document[] // List of work authorization related documents
 
   employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 }

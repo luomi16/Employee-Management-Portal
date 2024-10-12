@@ -21,6 +21,53 @@ const GET_EMPLOYEE_BY_ID = gql`
       updatedAt
       onboardingStatus
       email
+      address {
+        id
+        building
+        streetName
+        city
+        state
+        zip
+      }
+      phone {
+        id
+        cellPhone
+        workPhone
+      }
+      reference {
+        id
+        firstName
+        lastName
+        middleName
+        phone
+        email
+        relationship
+      }
+      workAuthorization {
+        id
+        visaType
+        startDate
+        endDate
+        documents {
+          id
+          fileName
+          fileUrl
+        }
+      }
+      documents {
+        id
+        fileName
+        fileUrl
+      }
+      emergencyContacts {
+        id
+        firstName
+        lastName
+        middleName
+        phone
+        email
+        relationship
+      }
     }
   }
 `;
@@ -29,11 +76,16 @@ const GET_EMPLOYEE_BY_ID = gql`
 export const fetchEmployeeById = createAsyncThunk(
   "employee/fetchEmployeeById",
   async (id: string, thunkAPI) => {
-    const { data } = await client.query({
-      query: GET_EMPLOYEE_BY_ID,
-      variables: { id },
-    });
-    return data.employeeById;
+    try {
+      const { data } = await client.query({
+        query: GET_EMPLOYEE_BY_ID,
+        variables: { id },
+      });
+      console.log(data);
+      return data.employeeById;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
 );
 
@@ -64,7 +116,7 @@ const employeeSlice = createSlice({
       })
       .addCase(fetchEmployeeById.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message || "Failed to fetch employee data";
+        state.error = action.payload as string;
       });
   },
 });

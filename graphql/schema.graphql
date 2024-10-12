@@ -11,16 +11,38 @@ type Address {
   zip: String
 }
 
+input AddressInput {
+  building: String
+  city: String
+  state: String
+  streetName: String
+  zip: String
+}
+
 type Document {
   fileName: String
   fileUrl: String
   id: String
 }
 
+input DocumentInput {
+  fileName: String
+  fileUrl: String
+}
+
 type EmergencyContact {
   email: String
   firstName: String
   id: String
+  lastName: String
+  middleName: String
+  phone: String
+  relationship: String
+}
+
+input EmergencyContactInput {
+  email: String
+  firstName: String
   lastName: String
   middleName: String
   phone: String
@@ -64,8 +86,9 @@ enum Identity {
 
 type Mutation {
   addWorkAuthorization(employeeId: String, endDate: String, startDate: String, visaType: String): WorkAuthorization
-  createEmployee(birthday: String, email: String, firstName: String, gender: Gender, identity: Identity, lastName: String, middleName: String, prefferedName: String, ssn: String, userId: String): Employee
-  createUser(email: String, password: String, username: String): User
+  createEmployee(address: [AddressInput], birthday: String, documents: [DocumentInput], email: String, emergencyContacts: [EmergencyContactInput], firstName: String, gender: Gender, identity: Identity, lastName: String, middleName: String, phone: [PhoneNumberInput], prefferedName: String, reference: ReferenceInput, ssn: String, userId: String, workAuthorization: WorkAuthorizationInput): Employee
+  createUser(email: String, image: String, password: String, username: String): User
+  signIn(email: String, password: String): User
   updateEmployee(data: String, id: String): Employee
   uploadDocument(employeeId: String, fileName: String, fileUrl: String): Document
 }
@@ -73,6 +96,11 @@ type Mutation {
 type PhoneNumber {
   cellPhone: String
   id: String
+  workPhone: String
+}
+
+input PhoneNumberInput {
+  cellPhone: String
   workPhone: String
 }
 
@@ -94,6 +122,15 @@ type Reference {
   relationship: String
 }
 
+input ReferenceInput {
+  email: String
+  firstName: String
+  lastName: String
+  middleName: String
+  phone: String
+  relationship: String
+}
+
 type User {
   createdAt: String
   email: String
@@ -107,6 +144,13 @@ type WorkAuthorization {
   documents: [Document]
   endDate: String
   id: String
+  startDate: String
+  visaType: String
+}
+
+input WorkAuthorizationInput {
+  documents: [DocumentInput]
+  endDate: String
   startDate: String
   visaType: String
 }
