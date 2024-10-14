@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { gql } from "@apollo/client";
 import client from "../../apolloClient";
+import { act } from "react-dom/test-utils";
 
 // GraphQL mutations and queries for sign-up and sign-in
 const SIGN_UP_MUTATION = gql`
@@ -71,7 +72,17 @@ const initialState: UserState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+      // state.isAuthenticated = true;
+      console.log(action.payload);
+    },
+    removeUser: (state) => {
+      state.user = null;
+      // state.isAuthenticated = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Sign-up cases
@@ -104,4 +115,5 @@ const userSlice = createSlice({
   },
 });
 
+export const { setUser, removeUser } = userSlice.actions;
 export default userSlice.reducer;

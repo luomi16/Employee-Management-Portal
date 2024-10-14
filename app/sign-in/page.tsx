@@ -6,6 +6,10 @@ import Link from "next/link";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useRouter } from "next/navigation";
 
+
+import { useAppDispatch } from "./../lib/redux/store";
+import { setUser } from "./../lib/redux/slices/userSlice";
+
 // Define the form values type
 interface FormValues {
   email: string;
@@ -15,11 +19,13 @@ interface FormValues {
 
 export default function SignInPage() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const handleFormSubmit = async (formValues: FormValues) => {
     try {
       // Validate form values with schema
       const validationResult = signInSchema.safeParse(formValues);
+
       if (!validationResult.success) {
         alert(validationResult.error.errors[0].message);
         return; // Stop execution if validation fails
@@ -31,11 +37,21 @@ export default function SignInPage() {
         alert(res.error);
         return; // Stop execution if sign-in fails
       }
+      
+      // const userInfo = res.data
+      // dispatch(setUser(userInfo))
+      // // Navigate to the home page after successful sign-in
+      // router.push("/");
 
-      // Navigate to the home page after successful sign-in
-      router.push("/");
+      // Dispatch to Redux store to store user details
+      if (res.data) {
+        console.log(res.data);
+        dispatch(setUser(res.data));
+        router.push("/");}
+
     } catch (err) {
-      console.error("Sign-in error:", err);
+      console.log(typeof(err));
+      console.error("Sign-in error:", typeof(err),err);
       alert("An error occurred during sign-in.");
     }
   };
