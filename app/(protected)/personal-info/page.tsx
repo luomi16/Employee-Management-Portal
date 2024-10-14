@@ -2,19 +2,30 @@
 
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { fetchEmployeeById } from "../../lib/redux/slices/employeeSlice";
+import {
+  fetchEmployeeById,
+  fetchEmployeeIdByUserId,
+} from "../../lib/redux/slices/employeeSlice";
 import { RootState, useAppDispatch } from "../../lib/redux/store";
 
 const PersonalInfoPage = () => {
   const dispatch = useAppDispatch();
+  const user = useSelector((state: RootState) => state.user.user);
+  const employeeId = useSelector(
+    (state: RootState) => state.employee.employeeId
+  );
   const employee = useSelector((state: RootState) => state.employee.employee);
   const status = useSelector((state: RootState) => state.employee.status);
   const error = useSelector((state: RootState) => state.employee.error);
 
-  // Example employee ID
-  const employeeId = "670adf37b0222f27d1367ebe"; // Replace this with dynamic logic if needed
+  useEffect(() => {
+    if (user && user.id && !employeeId) {
+      dispatch(fetchEmployeeIdByUserId(user.id));
+      console.log("userId", user.id);
+      console.log("employeeId", employeeId);
+    }
+  }, [dispatch, user, employeeId]);
 
-  // Fetch employee by ID when the component mounts
   useEffect(() => {
     if (employeeId) {
       dispatch(fetchEmployeeById(employeeId));
@@ -91,17 +102,29 @@ const PersonalInfoPage = () => {
               <p>Visa Type: {employee.workAuthorization.visaType}</p>
               <p>Start Date: {employee.workAuthorization.startDate}</p>
               <p>End Date: {employee.workAuthorization.endDate}</p>
-              {employee.workAuthorization.documents && employee.workAuthorization.documents.length > 0 && (
-                <div>
-                  <h3 className="text-xl font-bold mt-4">Documents</h3>
-                  {employee.workAuthorization.documents.map((doc: any, index: number) => (
-                    <div key={index} className="mt-2">
-                      <p>File Name: {doc.fileName}</p>
-                      <p>File URL: <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer">{doc.fileUrl}</a></p>
-                    </div>
-                  ))}
-                </div>
-              )}
+              {employee.workAuthorization.documents &&
+                employee.workAuthorization.documents.length > 0 && (
+                  <div>
+                    <h3 className="text-xl font-bold mt-4">Documents</h3>
+                    {employee.workAuthorization.documents.map(
+                      (doc: any, index: number) => (
+                        <div key={index} className="mt-2">
+                          <p>File Name: {doc.fileName}</p>
+                          <p>
+                            File URL:{" "}
+                            <a
+                              href={doc.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {doc.fileUrl}
+                            </a>
+                          </p>
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
             </div>
           ) : (
             <p>No work authorization data available.</p>
@@ -114,7 +137,16 @@ const PersonalInfoPage = () => {
               {employee.documents.map((doc: any, index: number) => (
                 <div key={index} className="mt-2">
                   <p>File Name: {doc.fileName}</p>
-                  <p>File URL: <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer">{doc.fileUrl}</a></p>
+                  <p>
+                    File URL:{" "}
+                    <a
+                      href={doc.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {doc.fileUrl}
+                    </a>
+                  </p>
                 </div>
               ))}
             </div>
@@ -123,7 +155,8 @@ const PersonalInfoPage = () => {
           )}
 
           {/* Emergency Contacts */}
-          {employee.emergencyContacts && employee.emergencyContacts.length > 0 ? (
+          {employee.emergencyContacts &&
+          employee.emergencyContacts.length > 0 ? (
             <div>
               <h2 className="text-2xl font-bold mt-4">Emergency Contacts</h2>
               {employee.emergencyContacts.map((contact: any, index: number) => (

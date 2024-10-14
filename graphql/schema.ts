@@ -162,6 +162,12 @@ const Query = objectType({
       resolve: UserResolvers.Query.employeeById, // Resolver for fetching an employee by ID
     });
 
+    t.field("employeeByUserId", {
+      type: "Employee",
+      args: { userId: stringArg() },
+      resolve: UserResolvers.Query.employeeByUserId, // Resolver for fetching an employee by UserID
+    });
+
     t.list.field("employeeDocuments", {
       type: "Document",
       args: { employeeId: stringArg() },

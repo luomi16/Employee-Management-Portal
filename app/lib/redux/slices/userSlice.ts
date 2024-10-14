@@ -28,7 +28,14 @@ const SIGN_IN_MUTATION = gql`
 // Thunk for signing up a user
 export const signUpUser = createAsyncThunk(
   "user/signUpUser",
-  async ({ email, password, username }: { email: string; password: string; username: string }, thunkAPI) => {
+  async (
+    {
+      email,
+      password,
+      username,
+    }: { email: string; password: string; username: string },
+    thunkAPI
+  ) => {
     try {
       const { data } = await client.mutate({
         mutation: SIGN_UP_MUTATION,
@@ -43,31 +50,48 @@ export const signUpUser = createAsyncThunk(
 
 // Thunk for signing in a user
 export const signInUser = createAsyncThunk(
-    "user/signInUser",
-    async ({ email, password }: { email: string; password: string }, thunkAPI) => {
-      try {
-        const { data } = await client.mutate({
-          mutation: SIGN_IN_MUTATION,
-          variables: { email, password },
-        });
-        return data.signIn; // Return the user data from the response
-      } catch (error: any) {
-        return thunkAPI.rejectWithValue(error.message);
-      }
+  "user/signInUser",
+  async (
+    { email, password }: { email: string; password: string },
+    thunkAPI
+  ) => {
+    try {
+      const { data } = await client.mutate({
+        mutation: SIGN_IN_MUTATION,
+        variables: { email, password },
+      });
+      return data.signIn; // Return the user data from the response
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
     }
-  );
+  }
+);
 
-interface UserState {
-  user: any;
-  status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
+// Define User type explicitly to help with type safety
+interface User {
+  id: string;
+  username: string;
+  email: string;
 }
 
+// Try to parse the user from localStorage or return null
+const getUserFromLocalStorage = (): User | null => {
+  const storedUser = localStorage.getItem("user");
+  return storedUser ? JSON.parse(storedUser) : null;
+};
+
 const initialState: UserState = {
-  user: null,
+  // Initialize user state by getting the user from localStorage or setting it to null
+  user: getUserFromLocalStorage(),
   status: "idle",
   error: null,
 };
+
+interface UserState {
+  user: User | null;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
+}
 
 const userSlice = createSlice({
   name: "user",
@@ -75,11 +99,13 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
+      localStorage.setItem("user", JSON.stringify(action.payload)); // Persist user data in localStorage
       // state.isAuthenticated = true;
       console.log(action.payload);
     },
     removeUser: (state) => {
       state.user = null;
+      localStorage.removeItem("user"); // Remove user data from localStorage
       // state.isAuthenticated = false;
     },
   },

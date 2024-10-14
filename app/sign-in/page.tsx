@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useRouter } from "next/navigation";
 
-
 import { useAppDispatch } from "./../lib/redux/store";
 import { setUser } from "./../lib/redux/slices/userSlice";
 
@@ -15,7 +14,6 @@ interface FormValues {
   email: string;
   password: string;
 }
-
 
 export default function SignInPage() {
   const router = useRouter();
@@ -37,7 +35,7 @@ export default function SignInPage() {
         alert(res.error);
         return; // Stop execution if sign-in fails
       }
-      
+
       // const userInfo = res.data
       // dispatch(setUser(userInfo))
       // // Navigate to the home page after successful sign-in
@@ -45,13 +43,13 @@ export default function SignInPage() {
 
       // Dispatch to Redux store to store user details
       if (res.data) {
-        console.log(res.data);
+        // console.log(res.data);
         dispatch(setUser(res.data));
-        router.push("/");}
-
+        router.push("/");
+      }
     } catch (err) {
-      console.log(typeof(err));
-      console.error("Sign-in error:", typeof(err),err);
+      console.log(typeof err);
+      console.error("Sign-in error:", typeof err, err);
       alert("An error occurred during sign-in.");
     }
   };
@@ -91,10 +89,11 @@ export default function SignInPage() {
               component="div"
               className="text-red-500"
             />
-            <SubmitButton pendingText="Logging in...">
-              Login
-            </SubmitButton>
-            <Link className="text-gray-400 hover:underline mt-4" href="/sign-up">
+            <SubmitButton pendingText="Logging in...">Login</SubmitButton>
+            <Link
+              className="text-gray-400 hover:underline mt-4"
+              href="/sign-up"
+            >
               Don't have an account? Sign Up
             </Link>
           </Form>
