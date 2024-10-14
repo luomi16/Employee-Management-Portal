@@ -5,8 +5,8 @@ import { signUpAction } from "@/lib/actions";
 import Link from "next/link";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
-import { useAppDispatch } from "./../lib/redux/store";
-import { signUpUser } from "./../lib/redux/slices/userSlice";
+// import { useAppDispatch } from "./../lib/redux/store";
+// import { signUpUser } from "./../lib/redux/slices/userSlice";
 import { useRouter } from "next/navigation";
 
 // Define the form values type
@@ -17,7 +17,7 @@ interface FormValues {
 }
 
 export default function SignUpPage() {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const router = useRouter();
 
   // Specify the type for formValues
@@ -38,13 +38,13 @@ export default function SignUpPage() {
       }
 
       // Dispatch to Redux store to store user details
-      dispatch(
-        signUpUser({
-          email: formValues.email,
-          password: formValues.password,
-          username: formValues.username,
-        })
-      );
+      // dispatch(
+      //   signUpUser({
+      //     email: formValues.email,
+      //     password: formValues.password,
+      //     username: formValues.username,
+      //   })
+      // );
 
       // Navigate to sign-in or dashboard after successful signup
       router.push("/sign-in");
@@ -116,10 +116,6 @@ export default function SignUpPage() {
           </Form>
         )}
       </Formik>
-      <div
-        className="w-[70%] h-[2px] bg-gray-400 mt-4 rounded-full"
-        id="divider"
-      />
     </main>
   );
 }

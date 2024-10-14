@@ -9,7 +9,21 @@ import { redirect } from "next/navigation";
 
 export const signInAction = async (signInValues: SignInValues) => {
   try {
-    await signIn("credentials", signInValues);
+    // await signIn("credentials", signInValues);
+    const result = await signIn("credentials", {
+      ...signInValues,
+      redirect: false,
+    });
+    if (result?.error) {
+      return { error: result.error };
+    }
+    // get user data
+    const user = await prisma.user.findUnique({
+      where: { email: signInValues.email },
+      select: { id: true, email: true, username: true },
+    });
+    return { data: user };
+
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
