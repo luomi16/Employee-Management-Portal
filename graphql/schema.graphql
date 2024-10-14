@@ -106,6 +106,7 @@ input PhoneNumberInput {
 
 type Query {
   employeeById(id: String): Employee
+  employeeByUserId(userId: String): Employee
   employeeDocuments(employeeId: String): [Document]
   employees: [Employee]
   userById(id: String): User

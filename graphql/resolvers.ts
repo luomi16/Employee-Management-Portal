@@ -42,6 +42,23 @@ export const UserResolvers = {
         },
       });
     },
+    
+    // Resolver to get an employee by userId
+    employeeByUserId: async (_parent: any, args: { userId: string }) => {
+      console.log(args.userId);
+      return prisma.employee.findFirst({
+        where: { userId: args.userId },  // Assuming there is a `userId` field in the Employee table
+        include: {
+          address: true,
+          phone: true,
+          workAuthorization: true,
+          emergencyContacts: true,
+          reference: true,
+          documents: true,
+        },
+      });
+    },
+
     // Resolver to get all documents of a specific employee
     employeeDocuments: async (_parent: any, args: { employeeId: string }) => {
       return prisma.document.findMany({

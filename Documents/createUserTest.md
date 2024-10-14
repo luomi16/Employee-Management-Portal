@@ -1,4 +1,5 @@
 # Example Variables
+
 ```
 {
   "username": "David",
@@ -18,15 +19,19 @@
   "password": "letmein456",
   "image": "https://avatar.iran.liara.run/public/19"
 },
-```
-还没用的
-```
+
 {
   "username": "Johnny",
   "email": "li.wang@example.com",
   "password": "liwang123",
   "image": "https://avatar.iran.liara.run/public/15"
 },
+```
+
+还没用的
+
+```
+
 {
   "username": "Alice",
   "email": "alice.smith@example.com",
