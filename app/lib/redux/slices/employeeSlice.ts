@@ -81,6 +81,28 @@ const GET_EMPLOYEE_BY_ID = gql`
   }
 `;
 
+// GraphQL for getting all employees
+const GET_ALL_EMPLOYEES = gql`
+  query Query {
+    employees {
+      email
+      ssn
+      firstName
+      lastName
+      middleName
+      phone {
+        cellPhone
+        workPhone
+      }
+      identity
+      workAuthorization {
+        visaType
+      }
+      onboardingStatus
+    }
+  }
+`;
+
 // Async thunk to fetch employee data by ID
 export const fetchEmployeeById = createAsyncThunk(
   "employee/fetchEmployeeById",
@@ -115,6 +137,27 @@ export const fetchEmployeeIdByUserId = createAsyncThunk(
   }
 );
 
+// Async Thunk to fetch all employees
+export const fetchAllEmployees = createAsyncThunk(
+  "employee/fetchAllEmployees",
+  async (_, thunkAPI) => {
+    try {
+      const { data } = await client.query({
+        query: GET_ALL_EMPLOYEES,
+      });
+      return data.employees; // Return employees array
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+interface EmployeeState {
+  employees: any[];
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
+}
+
 interface EmployeeState {
   employee: any;
   employeeId: string | null;
@@ -125,6 +168,7 @@ interface EmployeeState {
 const initialState: EmployeeState = {
   employee: null,
   employeeId: null,
+  employees: [], // Hold the list of employees
   status: "idle",
   error: null,
 };
@@ -154,6 +198,18 @@ const employeeSlice = createSlice({
         state.employeeId = action.payload;
       })
       .addCase(fetchEmployeeIdByUserId.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload as string;
+      })
+      // Handle fetchAllEmployees cases
+      .addCase(fetchAllEmployees.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchAllEmployees.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.employees = action.payload; // Store the employees in the state
+      })
+      .addCase(fetchAllEmployees.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload as string;
       });
