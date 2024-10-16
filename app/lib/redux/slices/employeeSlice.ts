@@ -85,6 +85,7 @@ const GET_EMPLOYEE_BY_ID = gql`
 const GET_ALL_EMPLOYEES = gql`
   query Query {
     employees {
+      id
       email
       ssn
       firstName

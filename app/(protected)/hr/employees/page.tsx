@@ -2,6 +2,7 @@
 
 import Sidebar from "@/components/Sidebar";
 import { Container } from "react-bootstrap";
+import Link from "next/link";
 
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -23,7 +24,7 @@ const EmployeesPage = () => {
     }
   }, [dispatch, status]);
 
-  console.log("employees", employees);
+  // console.log("employees", employees);
 
   return (
     <Container className="flex">
@@ -33,7 +34,7 @@ const EmployeesPage = () => {
           <div className="flex items-center gap-x-3">
             <h2 className="text-lg font-medium  text-white">Employees</h2>
             <span className="px-3 py-1 text-xs  bg-gray-800 text-blue-400">
-              {employees.length} Customers
+              {employees.length}
             </span>
           </div>
         </div>
@@ -133,7 +134,10 @@ const EmployeesPage = () => {
                       employees.map((employee: any) => (
                         <tr key={employee.ssn}>
                           <td className="px-4 py-4 text-sm text-white">
-                            {employee.firstName} {employee.lastName}
+                            <Link href={`/hr/employee-info/${employee.id}`}>
+                              {employee.firstName} {employee.middleName}{" "}
+                              {employee.lastName}
+                            </Link>
                           </td>
                           <td className="px-4 py-4 text-sm text-white">
                             {employee.ssn}

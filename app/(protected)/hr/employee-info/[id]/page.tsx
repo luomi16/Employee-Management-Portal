@@ -2,31 +2,26 @@
 
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  fetchEmployeeById,
-  fetchEmployeeIdByUserId,
-} from "../../lib/redux/slices/employeeSlice";
-import { RootState, useAppDispatch } from "../../lib/redux/store";
+import { fetchEmployeeById } from "../../../../lib/redux/slices/employeeSlice";
+import { RootState, useAppDispatch } from "../../../../lib/redux/store";
+import { useParams } from "next/navigation";
 
 import Infotable from "@/components/Infotable";
 
-const PersonalInfoPage = () => {
+const EmployeeInfoPage = () => {
   const dispatch = useAppDispatch();
-  const user = useSelector((state: RootState) => state.user.user);
-  const employeeId = useSelector(
-    (state: RootState) => state.employee.employeeId
-  );
+
   const employee = useSelector((state: RootState) => state.employee.employee);
   const status = useSelector((state: RootState) => state.employee.status);
   const error = useSelector((state: RootState) => state.employee.error);
 
-  useEffect(() => {
-    if (user && user.id && !employeeId) {
-      dispatch(fetchEmployeeIdByUserId(user.id));
-      console.log("userId", user.id);
-      console.log("employeeId", employeeId);
-    }
-  }, [dispatch, user, employeeId]);
+  const params = useParams();
+  console.log(params);
+  let employeeId = params.id;
+
+  if (Array.isArray(employeeId)) {
+    employeeId = employeeId[0]; // Use the first element if it's an array
+  }
 
   useEffect(() => {
     if (employeeId) {
@@ -48,4 +43,4 @@ const PersonalInfoPage = () => {
   );
 };
 
-export default PersonalInfoPage;
+export default EmployeeInfoPage;
