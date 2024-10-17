@@ -23,8 +23,8 @@ const PersonalInfoPage = () => {
   useEffect(() => {
     if (user && user.id && !employeeId) {
       dispatch(fetchEmployeeIdByUserId(user.id));
-      console.log("userId", user.id);
-      console.log("employeeId", employeeId);
+      // console.log("userId", user.id);
+      // console.log("employeeId", employeeId);
     }
   }, [dispatch, user, employeeId]);
 

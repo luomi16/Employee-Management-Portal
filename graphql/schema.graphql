@@ -2,7 +2,6 @@
 ### Do not make changes to this file directly
 
 type Address {
-  building: String
   city: String
   id: String
   state: String
@@ -11,7 +10,6 @@ type Address {
 }
 
 input AddressInput {
-  building: String
   city: String
   state: String
   streetName: String
@@ -59,7 +57,7 @@ input EmergencyContactInput {
 }
 
 type Employee {
-  address: [Address]
+  address: Address
   birthday: String
   createdAt: String
   documents: [Document]
@@ -72,9 +70,9 @@ type Employee {
   lastName: String
   middleName: String
   onboardingStatus: String
-  phone: [PhoneNumber]
+  phone: String
   prefferedName: String
-  reference: Reference
+  reference: [Reference]
   ssn: String
   updatedAt: String
   userId: String
@@ -94,37 +92,9 @@ enum Identity {
 }
 
 type Mutation {
-  addWorkAuthorization(
-    employeeId: String
-    endDate: String
-    startDate: String
-    visaType: String
-  ): WorkAuthorization
-  createEmployee(
-    address: [AddressInput]
-    birthday: String
-    documents: [DocumentInput]
-    email: String
-    emergencyContacts: [EmergencyContactInput]
-    firstName: String
-    gender: Gender
-    identity: Identity
-    lastName: String
-    middleName: String
-    phone: [PhoneNumberInput]
-    prefferedName: String
-    reference: ReferenceInput
-    ssn: String
-    userId: String
-    workAuthorization: WorkAuthorizationInput
-  ): Employee
-  createUser(
-    email: String
-    image: String
-    password: String
-    username: String
-  ): User
-  sendRegistrationToken(email: String, name: String): RegistrationToken
+  addWorkAuthorization(employeeId: String, endDate: String, startDate: String, visaType: String): WorkAuthorization
+  createEmployee(address: AddressInput, birthday: String, documents: [DocumentInput], email: String, emergencyContacts: [EmergencyContactInput], firstName: String, gender: Gender, identity: Identity, lastName: String, middleName: String, phone: String, prefferedName: String, reference: [ReferenceInput], ssn: String, userId: String, workAuthorization: WorkAuthorizationInput): Employee
+  createUser(email: String, image: String, password: String, username: String): User
   signIn(email: String, password: String): User
   updateEmployee(data: String, id: String): Employee
   uploadDocument(
@@ -133,17 +103,6 @@ type Mutation {
     fileName: String
     fileUrl: String
   ): Document
-}
-
-type PhoneNumber {
-  cellPhone: String
-  id: String
-  workPhone: String
-}
-
-input PhoneNumberInput {
-  cellPhone: String
-  workPhone: String
 }
 
 type Query {
