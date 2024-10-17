@@ -146,6 +146,7 @@ export const fetchAllEmployees = createAsyncThunk(
       const { data } = await client.query({
         query: GET_ALL_EMPLOYEES,
       });
+      console.log(data);
       return data.employees; // Return employees array
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
