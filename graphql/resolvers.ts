@@ -8,6 +8,9 @@ import {
   OnboardingStatus,
 } from "@prisma/client";
 import { hash, compare } from "bcryptjs";
+import * as nodemailer from "nodemailer";
+
+import { generateToken } from "@/graphql/utils/tokens";
 
 const prisma = new PrismaClient();
 
@@ -42,12 +45,12 @@ export const UserResolvers = {
         },
       });
     },
-    
+
     // Resolver to get an employee by userId
     employeeByUserId: async (_parent: any, args: { userId: string }) => {
       console.log(args.userId);
       return prisma.employee.findFirst({
-        where: { userId: args.userId },  // Assuming there is a `userId` field in the Employee table
+        where: { userId: args.userId }, // Assuming there is a `userId` field in the Employee table
         include: {
           address: true,
           phone: true,
@@ -65,7 +68,13 @@ export const UserResolvers = {
         where: { employeeId: args.employeeId },
       });
     },
+
+    // resolever to get send registration token history
+    registrationTokenHistory: async () => {
+      return prisma.registrationToken.findMany();
+    },
   },
+
   Mutation: {
     // Resolver to create a new user
     createUser: async (
@@ -395,6 +404,57 @@ export const UserResolvers = {
           fileUrl: args.fileUrl,
         },
       });
+    },
+
+    // Resolver to send a registration token for an employee
+    sendRegistrationToken: async (
+      _parent: any,
+      args: { name: string; email: string }
+    ) => {
+      const { name, email } = args;
+
+      // Generate a unique registration token
+      const token = generateToken(
+        email,
+        name,
+        process.env.JWT_SECRET || "your-secret-key"
+      );
+      const tokenExpiration = new Date(Date.now() + 3 * 60 * 60 * 1000); // Token expires in 3 hours
+
+      // Save the token to the database
+      const registrationToken = await prisma.registrationToken.create({
+        data: {
+          email,
+          name,
+          token,
+          tokenExpiration,
+        },
+      });
+
+      // Send the email with Nodemailer
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
+
+      const registrationLink = `http://localhost:3000/sign-up?token=${registrationToken.token}`;
+
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Employee Registration Link",
+        text: `Hello ${name},\n\nClick the following link to complete your registration: ${registrationLink}\n\nThis link is valid for 3 hours.`,
+      };
+
+      await transporter.sendMail(mailOptions);
+
+      return { success: true, message: "Registration token sent successfully" };
     },
   },
 };

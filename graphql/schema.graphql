@@ -88,6 +88,7 @@ type Mutation {
   addWorkAuthorization(employeeId: String, endDate: String, startDate: String, visaType: String): WorkAuthorization
   createEmployee(address: [AddressInput], birthday: String, documents: [DocumentInput], email: String, emergencyContacts: [EmergencyContactInput], firstName: String, gender: Gender, identity: Identity, lastName: String, middleName: String, phone: [PhoneNumberInput], prefferedName: String, reference: ReferenceInput, ssn: String, userId: String, workAuthorization: WorkAuthorizationInput): Employee
   createUser(email: String, image: String, password: String, username: String): User
+  sendRegistrationToken(email: String, name: String): RegistrationToken
   signIn(email: String, password: String): User
   updateEmployee(data: String, id: String): Employee
   uploadDocument(employeeId: String, fileName: String, fileUrl: String): Document
@@ -109,6 +110,7 @@ type Query {
   employeeByUserId(userId: String): Employee
   employeeDocuments(employeeId: String): [Document]
   employees: [Employee]
+  registrationTokenHistory: [RegistrationToken]
   userById(id: String): User
   users: [User]
 }
@@ -130,6 +132,16 @@ input ReferenceInput {
   middleName: String
   phone: String
   relationship: String
+}
+
+type RegistrationToken {
+  createdAt: String
+  email: String
+  id: ID
+  isOnboarded: Boolean
+  name: String
+  token: String
+  tokenExpiration: String
 }
 
 type User {

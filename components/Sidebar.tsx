@@ -58,7 +58,7 @@ export default function Sidebar() {
 
           <Link
             className="flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-md text-gray-400  hover:bg-gray-800 hover:text-gray-200 "
-            href="#"
+            href="/hr/visa-management"
           >
             <svg
               className="w-5 h-5"
@@ -98,28 +98,6 @@ export default function Sidebar() {
             </svg>
 
             <span className="mx-4 font-medium">Hiring Manage</span>
-          </Link>
-
-          <Link
-            className="flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-md text-gray-400  hover:bg-gray-800 hover:text-gray-200 "
-            href="#"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"
-              />
-            </svg>
-
-            <span className="mx-4 font-medium">Application Review</span>
           </Link>
         </nav>
       </div>

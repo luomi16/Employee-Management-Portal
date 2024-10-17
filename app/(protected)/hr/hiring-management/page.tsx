@@ -1,18 +1,32 @@
-import { auth } from "@/auth";
-import Link from "next/link";
+"use client";
 
-const HiringManagementPage = async () => {
-  const session = await auth();
+import { useState } from "react";
+import { auth } from "@/auth";
+import Sidebar from "@/components/Sidebar";
+import SendRegistrationToken from "@/components/SendRegistrationToken";
+import RegistrationTokenHistory from "@/components/RegistrationTokenHistory";
+
+const HiringManagement = () => {
+  const [showHistory, setShowHistory] = useState(false);
+
   return (
-    <section className="main-container">
-      <h1 className="header-text text-3xl font-bold mt-4">
-        This is a hiring management Page
-      </h1>
-      <p className="mt-4 text-lg">
-        Current User email: {session?.user?.email || "None"}
-      </p>
-    </section>
+    <main className="flex">
+      <section>
+        <Sidebar />
+      </section>
+      <section className="container px-4 mx-auto">
+        <h1 className="header-text text-3xl font-bold mt-4">Hiring Manage</h1>
+        <SendRegistrationToken />
+        <button
+          className="mt-4 bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded"
+          onClick={() => setShowHistory(!showHistory)}
+        >
+          {showHistory ? "Hide History" : "Show History"}
+        </button>
+        {showHistory && <RegistrationTokenHistory />}
+      </section>
+    </main>
   );
 };
 
-export default HiringManagementPage;
+export default HiringManagement;
