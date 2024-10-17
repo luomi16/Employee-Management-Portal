@@ -37,13 +37,15 @@ const Employee = objectType({
     t.string("email");
     t.string("ssn");
     t.string("birthday");
+    t.string("phone");
     t.field("gender", { type: "Gender" });
     t.field("identity", { type: "Identity" });
-    t.list.field("address", { type: Address });
-    t.list.field("phone", { type: PhoneNumber });
+    // t.list.field("address", { type: Address });
+    t.field("address", { type: Address });
     t.field("workAuthorization", { type: WorkAuthorization });
     t.list.field("emergencyContacts", { type: EmergencyContact });
-    t.field("reference", { type: Reference });
+    // t.field("reference", { type: Reference });
+    t.list.field("reference", { type: Reference });
     t.list.field("documents", { type: Document });
     t.field("createdAt", { type: "String" });
     t.field("updatedAt", { type: "String" });
@@ -56,21 +58,10 @@ const Address = objectType({
   name: "Address",
   definition(t) {
     t.string("id");
-    t.string("building");
     t.string("streetName");
     t.string("city");
     t.string("state");
     t.string("zip");
-  },
-});
-
-// Define PhoneNumber type
-const PhoneNumber = objectType({
-  name: "PhoneNumber",
-  definition(t) {
-    t.string("id");
-    t.string("cellPhone");
-    t.string("workPhone");
   },
 });
 
@@ -210,23 +201,19 @@ const Mutation = objectType({
         prefferedName: stringArg(),
         email: stringArg(),
         ssn: stringArg(),
+        phone: stringArg(),
         birthday: stringArg(),
         gender: arg({ type: "Gender" }), // Use the Gender enum as an argument
         identity: arg({ type: "Identity" }), // Use the Identity enum as an argument
         userId: stringArg(), // Make sure this is defined
-        address: list(
-          arg({
-            type: "AddressInput", // Assuming you define the input type below
-          })
-        ),
-        phone: list(
-          arg({
-            type: "PhoneNumberInput", // Assuming you define the input type below
-          })
-        ),
-        reference: arg({
-          type: "ReferenceInput", // Assuming you define the input type below
+        address: arg({
+          type: "AddressInput", // Assuming you define the input type below
         }),
+        reference: list(
+          arg({
+            type: "ReferenceInput", // Assuming you define the input type below
+          })
+        ),
         workAuthorization: arg({
           type: "WorkAuthorizationInput", // Assuming you define the input type below
         }),
@@ -280,20 +267,10 @@ const Mutation = objectType({
 const AddressInput = inputObjectType({
   name: "AddressInput",
   definition(t) {
-    t.string("building");
     t.string("streetName");
     t.string("city");
     t.string("state");
     t.string("zip");
-  },
-});
-
-// Define PhoneNumberInput type
-const PhoneNumberInput = inputObjectType({
-  name: "PhoneNumberInput",
-  definition(t) {
-    t.string("cellPhone");
-    t.string("workPhone");
   },
 });
 
@@ -348,7 +325,6 @@ export const schema = makeSchema({
     User,
     Employee,
     Address,
-    PhoneNumber,
     WorkAuthorization,
     Document,
     EmergencyContact,
@@ -356,7 +332,6 @@ export const schema = makeSchema({
     Gender,
     Identity,
     AddressInput,
-    PhoneNumberInput,
     ReferenceInput,
     WorkAuthorizationInput,
     DocumentInput,

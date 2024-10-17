@@ -76,8 +76,11 @@ interface User {
 
 // Try to parse the user from localStorage or return null
 const getUserFromLocalStorage = (): User | null => {
-  const storedUser = localStorage.getItem("user");
-  return storedUser ? JSON.parse(storedUser) : null;
+  if (typeof window !== "undefined") {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  }
+  return null; // Return null if running on the server
 };
 
 const initialState: UserState = {

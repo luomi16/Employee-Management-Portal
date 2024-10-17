@@ -34,7 +34,6 @@ export const UserResolvers = {
         where: { id: args.id },
         include: {
           address: true,
-          phone: true,
           workAuthorization: true,
           emergencyContacts: true,
           reference: true,
@@ -42,15 +41,14 @@ export const UserResolvers = {
         },
       });
     },
-    
+
     // Resolver to get an employee by userId
     employeeByUserId: async (_parent: any, args: { userId: string }) => {
       console.log(args.userId);
       return prisma.employee.findFirst({
-        where: { userId: args.userId },  // Assuming there is a `userId` field in the Employee table
+        where: { userId: args.userId }, // Assuming there is a `userId` field in the Employee table
         include: {
           address: true,
-          phone: true,
           workAuthorization: true,
           emergencyContacts: true,
           reference: true,
@@ -123,25 +121,21 @@ export const UserResolvers = {
         gender: Gender;
         identity: Identity;
         userId: string;
-        address: Array<{
-          building: string;
+        phone: string;
+        address: {
           streetName: string;
           city: string;
           state: string;
           zip: string;
-        }>;
-        phone: Array<{
-          cellPhone: string;
-          workPhone?: string;
-        }>;
-        reference: {
+        };
+        references: Array<{
           firstName: string;
           lastName: string;
           middleName?: string;
           phone: string;
           email: string;
           relationship: string;
-        };
+        }>;
         workAuthorization: {
           visaType: VisaType;
           startDate: string;
@@ -167,149 +161,52 @@ export const UserResolvers = {
       context: any
       // _parent: any, args: any, context: any
     ) => {
-      //   data: {
-      //     firstName: args.firstName,
-      //     lastName: args.lastName,
-      //     middleName: args.middleName,
-      //     prefferedName: args.prefferedName,
-      //     email: args.email,
-      //     ssn: args.ssn,
-      //     birthday: new Date(args.birthday),
-      //     gender: args.gender,
-      //     identity: args.identity,
-      //     onboardingStatus: "PENDING", // 默认值
-      //     user: {
-      //       connect: { id: args.userId }, // 关联到一个现有的用户
-      //     },
-      //     // 嵌套创建 Address
-      //     address: args.address
-      //       ? {
-      //           create: args.address.map((addr: any) => ({
-      //             building: addr.building,
-      //             streetName: addr.streetName,
-      //             city: addr.city,
-      //             state: addr.state,
-      //             zip: addr.zip,
-      //           })),
-      //         }
-      //       : undefined,
-      //     // 嵌套创建 Phone
-      //     phone: args.phone
-      //       ? {
-      //           create: args.phone.map((ph: any) => ({
-      //             cellPhone: ph.cellPhone,
-      //             workPhone: ph.workPhone,
-      //           })),
-      //         }
-      //       : undefined,
-      //     // 嵌套创建 Reference
-      //     reference: args.reference
-      //       ? {
-      //           create: {
-      //             firstName: args.reference.firstName,
-      //             lastName: args.reference.lastName,
-      //             middleName: args.reference.middleName,
-      //             phone: args.reference.phone,
-      //             email: args.reference.email,
-      //             relationship: args.reference.relationship,
-      //           },
-      //         }
-      //       : undefined,
-      //     // 嵌套创建 WorkAuthorization
-      //     workAuthorization: args.workAuthorization
-      //       ? {
-      //           create: {
-      //             visaType: args.workAuthorization.visaType,
-      //             startDate: args.workAuthorization.startDate
-      //               ? new Date(args.workAuthorization.startDate)
-      //               : null,
-      //             endDate: args.workAuthorization.endDate
-      //               ? new Date(args.workAuthorization.endDate)
-      //               : null,
-      //             // 确保 documents 存在
-      //             documents: args.workAuthorization.documents
-      //               ? {
-      //                   create: args.workAuthorization.documents.map(
-      //                     (doc: any) => ({
-      //                       fileName: doc.fileName,
-      //                       fileUrl: doc.fileUrl,
-      //                     })
-      //                   ),
-      //                 }
-      //               : undefined,
-      //           },
-      //         }
-      //       : undefined,
-      //     // 嵌套创建 Documents
-      //     documents: args.documents
-      //       ? {
-      //           create: args.documents.map((doc: any) => ({
-      //             fileName: doc.fileName,
-      //             fileUrl: doc.fileUrl,
-      //           })),
-      //         }
-      //       : undefined,
-      //     // 嵌套创建 EmergencyContacts
-      //     emergencyContacts: args.emergencyContacts
-      //       ? {
-      //           create: args.emergencyContacts.map((contact: any) => ({
-      //             firstName: contact.firstName,
-      //             lastName: contact.lastName,
-      //             middleName: contact.middleName,
-      //             phone: contact.phone,
-      //             email: contact.email,
-      //             relationship: contact.relationship,
-      //           })),
-      //         }
-      //       : undefined,
-      //   },
-      // });
-      // Step 1: Create Employee record first
+      console.log(args);
+      // try {
+      // Step 1: 先创建 Employee
       const employee = await prisma.employee.create({
         data: {
           firstName: args.firstName,
           lastName: args.lastName,
-          middleName: args.middleName,
-          prefferedName: args.prefferedName,
+          middleName: args.middleName || null,
+          prefferedName: args.prefferedName || null,
           email: args.email,
+          phone: args.phone,
           ssn: args.ssn,
           birthday: new Date(args.birthday),
           gender: args.gender,
           identity: args.identity,
-          onboardingStatus: "PENDING",
+          onboardingStatus: "PENDING" || null,
           user: {
             connect: { id: args.userId },
           },
         },
       });
 
-      // Step 2: Create related documents, workAuthorization, etc.
+      // Step 2: 创建 Address，并关联 Employee
+      await prisma.address.create({
+        data: {
+          streetName: args.address.streetName,
+          city: args.address.city,
+          state: args.address.state,
+          zip: args.address.zip,
+          employee: {
+            connect: { id: employee.id },
+          },
+        },
+      });
+
+      // Create related documents, workAuthorization, etc.
       // Use the employee id to connect the nested data
 
-      if (args.address) {
-        await prisma.address.createMany({
-          data: args.address.map((addr) => ({
-            ...addr,
-            employeeId: employee.id, // Connect the employee
+      const references = args.references || [];
+      console.log(references);
+      if (references.length > 0) {
+        await prisma.reference.createMany({
+          data: references.map((reference) => ({
+            ...reference,
+            employeeId: employee.id,
           })),
-        });
-      }
-
-      if (args.phone) {
-        await prisma.phoneNumber.createMany({
-          data: args.phone.map((phone) => ({
-            ...phone,
-            employeeId: employee.id, // Connect the employee
-          })),
-        });
-      }
-
-      if (args.reference) {
-        await prisma.reference.create({
-          data: {
-            ...args.reference,
-            employeeId: employee.id, // Connect the employee
-          },
         });
       }
 
@@ -321,14 +218,11 @@ export const UserResolvers = {
             endDate: new Date(args.workAuthorization.endDate),
             employeeId: employee.id, // Connect the employee
             documents: {
-              // create: args.workAuthorization.documents.map((doc) => ({
-              //   ...doc,
-              // })),
               create: args.workAuthorization.documents.map((doc: any) => ({
                 fileName: doc.fileName,
                 fileUrl: doc.fileUrl,
                 employee: {
-                  connect: { id: employee.id }, // 通过 employeeId 关联已有的 Employee
+                  connect: { id: employee.id },
                 },
               })),
             },
@@ -336,7 +230,8 @@ export const UserResolvers = {
         });
       }
 
-      if (args.documents) {
+      const documents = args.documents || [];
+      if (documents.length > 0) {
         await prisma.document.createMany({
           data: args.documents.map((doc) => ({
             ...doc,
@@ -345,7 +240,8 @@ export const UserResolvers = {
         });
       }
 
-      if (args.emergencyContacts) {
+      const emergencyContacts = args.emergencyContacts || [];
+      if (emergencyContacts.length > 0) {
         await prisma.emergencyContact.createMany({
           data: args.emergencyContacts.map((contact) => ({
             ...contact,
@@ -354,6 +250,10 @@ export const UserResolvers = {
         });
       }
       return employee; // Return the employee with connected data
+      // } catch (error) {
+      //   console.error(error);
+      //   throw new Error("Failed to create employee");
+      // }
     },
 
     // Resolver to update an employee
