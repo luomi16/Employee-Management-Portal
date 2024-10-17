@@ -77,6 +77,19 @@ const WorkAuthorization = objectType({
   },
 });
 
+
+// Define Status enum
+const Status = enumType({
+  name: "Status",
+  members: ["PENDING", "APPROVED", "REJECTED"], // These are the possible values for status
+});
+
+// Define DocumentType enum
+const DocumentType = enumType({
+  name: "DocumentType",
+  members: ["OPT_RECEIPT", "OPT_EAD", "I_983", "I_20"], // These are the possible document types
+});
+
 // Define Document type
 const Document = objectType({
   name: "Document",
@@ -84,6 +97,9 @@ const Document = objectType({
     t.string("id");
     t.string("fileName");
     t.string("fileUrl");
+    t.field("status", {type: "Status"});
+    t.field("documentType", {type: "DocumentType"});
+    t.nullable.string("feedback");
   },
 });
 
@@ -112,6 +128,20 @@ const Reference = objectType({
     t.string("phone");
     t.string("email");
     t.string("relationship");
+  },
+});
+
+// Define RegistrationToken Type
+const RegistrationToken = objectType({
+  name: "RegistrationToken",
+  definition(t) {
+    t.id("id"); // ObjectId for MongoDB
+    t.string("email"); // Email string, should be unique in Prisma schema
+    t.string("name"); // Employee name
+    t.string("token"); // Unique token for registration link
+    t.string("tokenExpiration"); // Expiration timestamp
+    t.boolean("isOnboarded"); // Whether onboarding is completed
+    t.string("createdAt");
   },
 });
 
@@ -163,6 +193,11 @@ const Query = objectType({
       type: "Document",
       args: { employeeId: stringArg() },
       resolve: UserResolvers.Query.employeeDocuments, // Resolver for fetching documents of an employee
+    });
+
+    t.list.field("registrationTokenHistory", {
+      type: "RegistrationToken",
+      resolve: UserResolvers.Query.registrationTokenHistory, // Resolver for fetching all employees
     });
   },
 });
@@ -257,8 +292,18 @@ const Mutation = objectType({
         employeeId: stringArg(),
         fileName: stringArg(),
         fileUrl: stringArg(),
+        documentType: stringArg(), 
       },
       resolve: UserResolvers.Mutation.uploadDocument, // Resolver for uploading a document
+    });
+
+    t.field("sendRegistrationToken", {
+      type: "RegistrationToken",
+      args: {
+        name: stringArg(),
+        email: stringArg(),
+      },
+      resolve: UserResolvers.Mutation.sendRegistrationToken, // Resolver for send regestrarion token
     });
   },
 });
@@ -329,6 +374,7 @@ export const schema = makeSchema({
     Document,
     EmergencyContact,
     Reference,
+    RegistrationToken,
     Gender,
     Identity,
     AddressInput,
@@ -336,6 +382,9 @@ export const schema = makeSchema({
     WorkAuthorizationInput,
     DocumentInput,
     EmergencyContactInput,
+    Status,
+    DocumentType, 
+    Document
   ],
   outputs: {
     schema: path.join(process.cwd(), "graphql", "schema.graphql"),

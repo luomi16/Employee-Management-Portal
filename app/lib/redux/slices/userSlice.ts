@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { gql } from "@apollo/client";
 import client from "../../apolloClient";
-import { act } from "react-dom/test-utils";
 
 // GraphQL mutations and queries for sign-up and sign-in
 const SIGN_UP_MUTATION = gql`

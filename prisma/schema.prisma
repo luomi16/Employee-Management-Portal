@@ -117,6 +117,16 @@ model Document {
   WorkAuthorization   WorkAuthorization? @relation(fields: [workAuthorizationId], references: [id])
 }
 
+model RegistrationToken {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  email           String    @unique
+  name            String
+  token           String    @unique // Unique token for registration link
+  tokenExpiration DateTime  // The timestamp when the token will expire
+  isOnboarded     Boolean   @default(false) // Whether the employee has completed onboarding
+  createdAt       DateTime  @default(now()) // When the token was created
+}
+
 model HRRecord {
   id         String           @id @default(auto()) @map("_id") @db.ObjectId
   employeeId String           @db.ObjectId

@@ -1,4 +1,4 @@
-export default function HiringManagementLayout({
+export default function EmployeesLayout({
   children,
 }: {
   children: React.ReactNode;
