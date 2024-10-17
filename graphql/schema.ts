@@ -86,6 +86,19 @@ const WorkAuthorization = objectType({
   },
 });
 
+
+// Define Status enum
+const Status = enumType({
+  name: "Status",
+  members: ["PENDING", "APPROVED", "REJECTED"], // These are the possible values for status
+});
+
+// Define DocumentType enum
+const DocumentType = enumType({
+  name: "DocumentType",
+  members: ["OPT_RECEIPT", "OPT_EAD", "I_983", "I_20"], // These are the possible document types
+});
+
 // Define Document type
 const Document = objectType({
   name: "Document",
@@ -93,6 +106,9 @@ const Document = objectType({
     t.string("id");
     t.string("fileName");
     t.string("fileUrl");
+    t.field("status", {type: "Status"});
+    t.field("documentType", {type: "DocumentType"});
+    t.nullable.string("feedback");
   },
 });
 
@@ -270,6 +286,7 @@ const Mutation = objectType({
         employeeId: stringArg(),
         fileName: stringArg(),
         fileUrl: stringArg(),
+        documentType: stringArg(), 
       },
       resolve: UserResolvers.Mutation.uploadDocument, // Resolver for uploading a document
     });
@@ -361,6 +378,9 @@ export const schema = makeSchema({
     WorkAuthorizationInput,
     DocumentInput,
     EmergencyContactInput,
+    Status,
+    DocumentType, 
+    Document
   ],
   outputs: {
     schema: path.join(process.cwd(), "graphql", "schema.graphql"),

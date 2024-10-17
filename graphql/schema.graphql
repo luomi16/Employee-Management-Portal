@@ -20,14 +20,24 @@ input AddressInput {
 }
 
 type Document {
+  documentType: DocumentType
+  feedback: String
   fileName: String
   fileUrl: String
   id: String
+  status: Status
 }
 
 input DocumentInput {
   fileName: String
   fileUrl: String
+}
+
+enum DocumentType {
+  I_20
+  I_983
+  OPT_EAD
+  OPT_RECEIPT
 }
 
 type EmergencyContact {
@@ -90,7 +100,7 @@ type Mutation {
   createUser(email: String, image: String, password: String, username: String): User
   signIn(email: String, password: String): User
   updateEmployee(data: String, id: String): Employee
-  uploadDocument(employeeId: String, fileName: String, fileUrl: String): Document
+  uploadDocument(documentType: String, employeeId: String, fileName: String, fileUrl: String): Document
 }
 
 type PhoneNumber {
@@ -130,6 +140,12 @@ input ReferenceInput {
   middleName: String
   phone: String
   relationship: String
+}
+
+enum Status {
+  APPROVED
+  PENDING
+  REJECTED
 }
 
 type User {
