@@ -140,6 +140,20 @@ const Reference = objectType({
   },
 });
 
+// Define RegistrationToken Type
+const RegistrationToken = objectType({
+  name: "RegistrationToken",
+  definition(t) {
+    t.id("id"); // ObjectId for MongoDB
+    t.string("email"); // Email string, should be unique in Prisma schema
+    t.string("name"); // Employee name
+    t.string("token"); // Unique token for registration link
+    t.string("tokenExpiration"); // Expiration timestamp
+    t.boolean("isOnboarded"); // Whether onboarding is completed
+    t.string("createdAt");
+  },
+});
+
 // Define Gender Enum
 const Gender = enumType({
   name: "Gender", // This should match the expected type in your GraphQL schema
@@ -188,6 +202,11 @@ const Query = objectType({
       type: "Document",
       args: { employeeId: stringArg() },
       resolve: UserResolvers.Query.employeeDocuments, // Resolver for fetching documents of an employee
+    });
+
+    t.list.field("registrationTokenHistory", {
+      type: "RegistrationToken",
+      resolve: UserResolvers.Query.registrationTokenHistory, // Resolver for fetching all employees
     });
   },
 });
@@ -290,6 +309,15 @@ const Mutation = objectType({
       },
       resolve: UserResolvers.Mutation.uploadDocument, // Resolver for uploading a document
     });
+
+    t.field("sendRegistrationToken", {
+      type: "RegistrationToken",
+      args: {
+        name: stringArg(),
+        email: stringArg(),
+      },
+      resolve: UserResolvers.Mutation.sendRegistrationToken, // Resolver for send regestrarion token
+    });
   },
 });
 
@@ -370,6 +398,7 @@ export const schema = makeSchema({
     Document,
     EmergencyContact,
     Reference,
+    RegistrationToken,
     Gender,
     Identity,
     AddressInput,

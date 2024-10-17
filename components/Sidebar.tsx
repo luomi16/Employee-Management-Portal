@@ -3,31 +3,6 @@ import Link from "next/link";
 export default function Sidebar() {
   return (
     <aside className="flex flex-col w-64 h-screen px-4 py-8 overflow-y-auto border-r rtl:border-r-0 rtl:border-l bg-gray-900 border-gray-700">
-      <div className="relative mt-6">
-        <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg
-            className="w-5 h-5 text-gray-400"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            ></path>
-          </svg>
-        </span>
-
-        {/* search bar */}
-        <input
-          type="text"
-          className="w-full py-2 pl-10 pr-4  border rounded-md bg-gray-900 text-gray-300 border-gray-600  focus:border-blue-300 focus:ring-blue-300 focus:ring-opacity-40 focus:outline-none focus:ring"
-          placeholder="Search"
-        />
-      </div>
-
       <div className="flex flex-col justify-between flex-1 mt-6">
         <nav>
           <Link
@@ -83,7 +58,7 @@ export default function Sidebar() {
 
           <Link
             className="flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-md text-gray-400  hover:bg-gray-800 hover:text-gray-200 "
-            href="#"
+            href="/hr/visa-management"
           >
             <svg
               className="w-5 h-5"
@@ -123,28 +98,6 @@ export default function Sidebar() {
             </svg>
 
             <span className="mx-4 font-medium">Hiring Manage</span>
-          </Link>
-
-          <Link
-            className="flex items-center px-4 py-2 mt-5 transition-colors duration-300 transform rounded-md text-gray-400  hover:bg-gray-800 hover:text-gray-200 "
-            href="#"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              className="w-5 h-5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"
-              />
-            </svg>
-
-            <span className="mx-4 font-medium">Application Review</span>
           </Link>
         </nav>
       </div>
