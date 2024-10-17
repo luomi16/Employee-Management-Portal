@@ -4,6 +4,9 @@ import { SubmitButton } from "@/components/SubmitButton";
 import { signUpAction } from "@/lib/actions";
 import Link from "next/link";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useQuery, gql } from "@apollo/client";
 
 // import { useAppDispatch } from "./../lib/redux/store";
 // import { signUpUser } from "./../lib/redux/slices/userSlice";
@@ -16,9 +19,41 @@ interface FormValues {
   password: string;
 }
 
+const GET_REGISTRATION_TOKENS = gql`
+  query Query {
+    registrationTokenHistory {
+      token
+    }
+  }
+`;
+
 export default function SignUpPage() {
   // const dispatch = useAppDispatch();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tokenFromUrl = searchParams.get("token");
+  const [isValidToken, setIsValidToken] = useState<boolean | null>(null); // null indicates still loading
+
+  const { loading, error, data } = useQuery(GET_REGISTRATION_TOKENS);
+
+  // console.log("tokenFromUrl", tokenFromUrl);
+
+  useEffect(() => {
+    // console.log("Query loading:", loading);
+    // console.log("Query error:", error);
+    // console.log("Query data:", data);
+    if (loading || error) return;
+
+    if (tokenFromUrl && data) {
+      const foundToken = data.registrationTokenHistory.some(
+        (tokenData: { token: string }) => tokenData.token === tokenFromUrl
+      );
+
+      setIsValidToken(foundToken);
+    } else {
+      setIsValidToken(false);
+    }
+  }, [tokenFromUrl, data, loading, error]);
 
   // Specify the type for formValues
   const handleFormSubmit = async (formValues: FormValues) => {
@@ -37,16 +72,6 @@ export default function SignUpPage() {
         return; // Stop execution if sign-up fails
       }
 
-      // Dispatch to Redux store to store user details
-      // dispatch(
-      //   signUpUser({
-      //     email: formValues.email,
-      //     password: formValues.password,
-      //     username: formValues.username,
-      //   })
-      // );
-
-      // Navigate to sign-in or dashboard after successful signup
       router.push("/sign-in");
     } catch (err) {
       console.error("Sign-up error:", err);
@@ -56,70 +81,73 @@ export default function SignUpPage() {
 
   return (
     <main className="flex flex-col items-center mt-[10vh]">
-      <Formik
-        initialValues={{ username: "", email: "", password: "" }}
-        onSubmit={handleFormSubmit}
-      >
-        {({ handleChange }) => (
-          <Form className="flex flex-col items-center bg-gray-900 p-8 w-full max-w-[500px] rounded-sm shadow-lg border-t-[10px] border-gray-400">
-            <h1 className="flex gap-2 items-center p-2 font-bold text-center">
-              Sign Up
-            </h1>
-            <p className="text-center text-sm text-gray-500">
-              Demo app, please don't use your real email or password
-            </p>
-            <Field
-              className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
-              name="username"
-              type="text"
-              placeholder="Username"
-              onChange={handleChange}
-            />
-            <ErrorMessage
-              name="username"
-              component="div"
-              className="text-red-500"
-            />
-            <Field
-              className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
-              name="email"
-              type="email"
-              placeholder="Email"
-              onChange={handleChange}
-            />
-            <ErrorMessage
-              name="email"
-              component="div"
-              className="text-red-500"
-            />
-            <Field
-              className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
-              name="password"
-              type="password"
-              placeholder="Password"
-              onChange={handleChange}
-            />
-            <ErrorMessage
-              name="password"
-              component="div"
-              className="text-red-500"
-            />
-            <SubmitButton pendingText="Creating account...">
-              Create Account
-            </SubmitButton>
-            <Link
-              className="text-gray-400 hover:underline mt-4"
-              href="/sign-in"
-            >
-              Already have an account? Sign In
-            </Link>
-          </Form>
-        )}
-      </Formik>
+      {isValidToken ? (
+        <Formik
+          initialValues={{ username: "", email: "", password: "" }}
+          onSubmit={handleFormSubmit}
+        >
+          {({ handleChange }) => (
+            <Form className="flex flex-col items-center bg-gray-900 p-8 w-full max-w-[500px] rounded-sm shadow-lg border-t-[10px] border-gray-400">
+              <h1 className="flex gap-2 items-center p-2 font-bold text-center">
+                Sign Up
+              </h1>
+              <p className="text-center text-sm text-gray-500">
+                Demo app, please don't use your real email or password
+              </p>
+              <Field
+                className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+                name="username"
+                type="text"
+                placeholder="Username"
+                onChange={handleChange}
+              />
+              <ErrorMessage
+                name="username"
+                component="div"
+                className="text-red-500"
+              />
+              <Field
+                className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+                name="email"
+                type="email"
+                placeholder="Email"
+                onChange={handleChange}
+              />
+              <ErrorMessage
+                name="email"
+                component="div"
+                className="text-red-500"
+              />
+              <Field
+                className="p-4 rounded-sm outline-none shadow-sm bg-gray-800 text-white mt-2 w-[300px]"
+                name="password"
+                type="password"
+                placeholder="Password"
+                onChange={handleChange}
+              />
+              <ErrorMessage
+                name="password"
+                component="div"
+                className="text-red-500"
+              />
+              <SubmitButton pendingText="Creating account...">
+                Create Account
+              </SubmitButton>
+              <Link
+                className="text-gray-400 hover:underline mt-4"
+                href="/sign-in"
+              >
+                Already have an account? Sign In
+              </Link>
+            </Form>
+          )}
+        </Formik>
+      ) : (
+        <div>Invalid registration link</div>
+      )}
     </main>
   );
 }
-
 // "use client";
 // import { signUpSchema } from "@/lib/form-schemas";
 // import { SubmitButton } from "@/components/SubmitButton";
@@ -229,4 +257,3 @@ export default function SignUpPage() {
 //     </main>
 //   );
 // }
-

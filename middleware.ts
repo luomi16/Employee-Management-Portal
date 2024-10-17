@@ -12,6 +12,10 @@ export default auth((req) => {
 
   // if it is an API Next Auth route, we don't want to redirect
   if (isApiAuthRoute) return;
+  // Allow access to the GraphQL API without requiring authentication
+  if (nextUrl.pathname.startsWith("/api/graphql")) {
+    return NextResponse.next(); // Let the request through without redirect
+  }
 
   if (isAuthRoute) {
     if (isLoggedIn) {
