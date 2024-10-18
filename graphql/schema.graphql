@@ -99,7 +99,7 @@ type Mutation {
   sendRegistrationToken(email: String, name: String): RegistrationToken
   signIn(email: String, password: String): User
   updateEmployee(data: String, id: String): Employee
-  uploadDocument(documentType: String, employeeId: String, fileName: String, fileUrl: String): Document
+  uploadDocument(documentType: DocumentType, employeeId: String, fileName: String, fileUrl: String, status: Status): Document
 }
 
 type Query {

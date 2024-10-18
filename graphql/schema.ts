@@ -293,7 +293,8 @@ const Mutation = objectType({
         employeeId: stringArg(),
         fileName: stringArg(),
         fileUrl: stringArg(),
-        documentType: stringArg(), 
+        documentType: arg({ type: "DocumentType" }),
+        status: arg({ type: "Status" }),
       },
       resolve: EmployeeResolvers.Mutation.uploadDocument, // Resolver for uploading a document
     });
