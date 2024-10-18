@@ -36,21 +36,21 @@ export default function SignInPage() {
         return; // Stop execution if sign-in fails
       }
 
-      // const userInfo = res.data
-      // dispatch(setUser(userInfo))
-      // // Navigate to the home page after successful sign-in
-      // router.push("/");
-
-      // Dispatch to Redux store to store user details
+      // If login succeeds and returns user data
       if (res.data) {
-        // console.log(res.data);
         dispatch(setUser(res.data));
-        router.push("/dashboard");
+
+        // Decide redirect page based on user role
+        if (res.data.role === "EMPLOYEE") {
+          router.push("/dashboard");
+        } else if (res.data.role === "HR") {
+          router.push("/hr/hr-dashboard");
+        }
+
       }
     } catch (err) {
-      console.log(typeof err);
-      console.error("Sign-in error:", typeof err, err);
-      alert("An error occurred during sign-in.");
+      console.error("Login error:", err);
+      alert("Login process failed.");
     }
   };
 

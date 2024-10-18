@@ -14,94 +14,49 @@ import DetailedEmployeeInfo from "@/components/employee/DetailedEmployeeInfo";
 // GraphQL Mutation for creating an employee
 const CREATE_EMPLOYEE_MUTATION = gql`
   mutation CreateEmployee(
-    $firstName: String
-    $lastName: String
+    $userId: String!
+    $email: String!
+    $firstName: String!
+    $lastName: String!
     $middleName: String
     $prefferedName: String
-    $email: String
-    $ssn: String
-    $phone: String
-    $birthday: String
-    $gender: Gender
-    $identity: Identity
-    $userId: String
+    $profilePic: String
     $address: AddressInput
-    $references: [ReferenceInput]
+    $phone: String
+    $ssn: String!
+    $birthday: DateTime!
+    $gender: Gender!
+    $identity: Identity!
     $workAuthorization: WorkAuthorizationInput
-    $documents: [DocumentInput]
-    $emergencyContacts: [EmergencyContactInput]
+    $emergencyContacts: [EmergencyContactInput!]
+    $reference: [ReferenceInput!]
+    $onboardingStatus: OnboardingStatus!
+    $documents: [DocumentInput!]
   ) {
     createEmployee(
+      userId: $userId
+      email: $email
       firstName: $firstName
       lastName: $lastName
       middleName: $middleName
       prefferedName: $prefferedName
-      email: $email
-      ssn: $ssn
+      profilePic: $profilePic
+      address: $address
       phone: $phone
+      ssn: $ssn
       birthday: $birthday
       gender: $gender
       identity: $identity
-      userId: $userId
-      address: $address
-      references: $references
       workAuthorization: $workAuthorization
-      documents: $documents
       emergencyContacts: $emergencyContacts
+      reference: $reference
+      onboardingStatus: $onboardingStatus
+      documents: $documents
     ) {
       id
-      userId
+      email
       firstName
       lastName
-      middleName
-      prefferedName
-      email
-      ssn
-      birthday
-      phone
-      gender
-      identity
-      address {
-        id
-        streetName
-        city
-        state
-        zip
-      }
-      workAuthorization {
-        id
-        visaType
-        startDate
-        endDate
-      }
-      emergencyContacts {
-        id
-        firstName
-        lastName
-        middleName
-        phone
-        email
-        relationship
-      }
-      references {
-        id
-        firstName
-        lastName
-        middleName
-        phone
-        email
-        relationship
-      }
-      documents {
-        id
-        fileName
-        fileUrl
-        status
-        documentType
-        feedback
-      }
-      createdAt
-      updatedAt
       onboardingStatus
     }
   }
@@ -114,6 +69,7 @@ const CreateEmployeePage = () => {
   if (user && user.id) {
     console.log("userId", user.id);
   }
+
 
   const methods = useForm();
   const watch = methods.watch;
@@ -130,6 +86,7 @@ const CreateEmployeePage = () => {
     methods.setValue("birthday", "1990-01-01");
     methods.setValue("gender", "MALE");
     methods.setValue("identity", "OTHER");
+
 
     // Address
     methods.setValue("address.streetName", "Elm Street");
@@ -227,39 +184,35 @@ const CreateEmployeePage = () => {
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
-    console.log("form submission", data);
+    console.log("表单提交", data);
     try {
       const variables = {
         ...data,
         userId: user?.id,
         birthday: new Date(data.birthday).toISOString(),
         onboardingStatus: "PENDING",
-        references: data.references?.length > 0 ? data.references : [],
-        emergencyContacts:
-          data.emergencyContacts?.length > 0 ? data.emergencyContacts : [],
+        reference: data.reference?.length > 0 ? data.reference : [],
+        emergencyContacts: data.emergencyContacts?.length > 0 ? data.emergencyContacts : [],
         documents: data.documents?.length > 0 ? data.documents : [],
         workAuthorization: data.workAuthorization || null,
       };
-
-      console.log("variables", variables);
-
+  
+      console.log("发送到服务器的数据", variables);
+  
       const response = await request(
         "http://localhost:3000/api/graphql",
         CREATE_EMPLOYEE_MUTATION,
         variables
       );
-      console.log("server response", response);
+      console.log("服务器响应", response);
       // Reset the form after successful submission
       methods.reset();
       // Redirect or show success message
-      alert("Employee created successfully!");
+      alert("员工创建成功！");
       router.push("/");
     } catch (error) {
-      console.error("Error creating employee", error);
-      alert(
-        "Error creating employee: " +
-          (error instanceof Error ? error.message : String(error))
-      );
+      console.error("创建员工时出错", error);
+      alert("创建员工时出错：" + (error instanceof Error ? error.message : String(error)));
     }
   };
 
@@ -278,7 +231,7 @@ const CreateEmployeePage = () => {
         <div className="mt-6">
           <button
             type="submit"
-            // onClick={handleSubmit(onSubmit)}
+            onClick={handleSubmit(onSubmit)}
             className="bg-green-500 text-white p-2 rounded"
           >
             Create Employee

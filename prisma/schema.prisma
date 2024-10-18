@@ -45,7 +45,7 @@ model Employee {
   workAuthorization WorkAuthorization?
 
   emergencyContacts EmergencyContact[] // Multiple emergency contacts
-  references         Reference[] // Who referred the employee
+  reference         Reference[] // Who referred the employee
 
   onboardingStatus OnboardingStatus // Enum: 'PENDING', 'COMPLETED', 'REJECTED','REJECTED'
   documents        Document[] // Reference to uploaded documents

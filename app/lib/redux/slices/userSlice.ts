@@ -113,6 +113,7 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+
     builder
       // // Sign-up cases
       // .addCase(signUpUser.pending, (state) => {
@@ -141,6 +142,7 @@ const userSlice = createSlice({
       //   state.status = "failed";
       //   state.error = action.payload as string;
       // });
+
   },
 });
 

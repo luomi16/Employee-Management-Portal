@@ -18,7 +18,7 @@ export const EmployeeResolvers = {
           address: true,
           workAuthorization: true,
           emergencyContacts: true,
-          references: true,
+          reference: true,
           documents: true,
         },
       });
@@ -31,7 +31,7 @@ export const EmployeeResolvers = {
           address: true,
           workAuthorization: true,
           emergencyContacts: true,
-          references: true,
+          reference: true,
           documents: true,
         },
       });
@@ -44,7 +44,7 @@ export const EmployeeResolvers = {
           address: true,
           workAuthorization: true,
           emergencyContacts: true,
-          references: true,
+          reference: true,
           documents: true,
         },
       });
@@ -166,12 +166,12 @@ export const EmployeeResolvers = {
               endDate: new Date(args.workAuthorization.endDate),
               employeeId: employee.id, // Connect the employee
               documents: {
-                create: (args.workAuthorization.documents || []).map((doc: any) => ({
+                create: args.workAuthorization.documents.map((doc: any) => ({
                   fileName: doc.fileName,
                   fileUrl: doc.fileUrl,
-                  status: Status.PENDING,
-                  documentType: DocumentType.OPT_EAD,
-                  employee: { connect: { id: employee.id } }
+                  employee: {
+                    connect: { id: employee.id },
+                  },
                 })),
               },
             },
@@ -183,9 +183,7 @@ export const EmployeeResolvers = {
           await prisma.document.createMany({
             data: args.documents.map((doc) => ({
               ...doc,
-              employeeId: employee.id,
-              status: Status.PENDING,
-              documentType: DocumentType.OPT_EAD,
+              employeeId: employee.id, // Connect the employee
             })),
           });
         }
@@ -206,7 +204,7 @@ export const EmployeeResolvers = {
             address: true,
             workAuthorization: true,
             emergencyContacts: true,
-            references: true,
+            reference: true,
             documents: true,
           },
         });
