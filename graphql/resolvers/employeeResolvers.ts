@@ -1,27 +1,11 @@
-import {
-  PrismaClient,
-  Gender,
-  Identity,
-  VisaType,
-  OnboardingStatus,
-  Status,
-  DocumentType,
-} from "@prisma/client";
+import { PrismaClient, Gender, Identity, VisaType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export const EmployeeResolvers = {
   Query: {
     employees: async () => {
-      return prisma.employee.findMany({
-        include: {
-          address: true,
-          workAuthorization: true,
-          emergencyContacts: true,
-          reference: true,
-          documents: true,
-        },
-      });
+      return prisma.employee.findMany();
     },
     employeeById: async (_parent: any, args: { id: string }) => {
       console.log(args.id);
@@ -204,7 +188,7 @@ export const EmployeeResolvers = {
             address: true,
             workAuthorization: true,
             emergencyContacts: true,
-            reference: true,
+            references: true,
             documents: true,
           },
         });
@@ -216,19 +200,14 @@ export const EmployeeResolvers = {
         return completeEmployee;
       } catch (error: unknown) {
         console.error("Error creating employee:", error);
-        throw new Error(
-          `Failed to create employee: ${error instanceof Error ? error.message : String(error)}`
-        );
+        throw new Error(`Failed to create employee: ${error instanceof Error ? error.message : String(error)}`);
       }
     },
 
-    updateEmployee: async (
-      _parent: any,
-      args: { id: string; onboardingStatus: OnboardingStatus }
-    ) => {
+    updateEmployee: async (_parent: any, args: { id: string; data: any }) => {
       return prisma.employee.update({
         where: { id: args.id },
-        data: { onboardingStatus: args.onboardingStatus },
+        data: args.data,
       });
     },
 
@@ -253,21 +232,13 @@ export const EmployeeResolvers = {
 
     uploadDocument: async (
       _parent: any,
-      args: {
-        employeeId: string;
-        fileName: string;
-        fileUrl: string;
-        documentType: DocumentType;
-        status: Status;
-      }
+      args: { employeeId: string; fileName: string; fileUrl: string }
     ) => {
       return prisma.document.create({
         data: {
           employeeId: args.employeeId,
           fileName: args.fileName,
           fileUrl: args.fileUrl,
-          documentType: args.documentType,
-          status: args.status,
         },
       });
     },

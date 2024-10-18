@@ -41,12 +41,10 @@ const Employee = objectType({
     t.string("phone");
     t.field("gender", { type: "Gender" });
     t.field("identity", { type: "Identity" });
-    // t.list.field("address", { type: Address });
     t.field("address", { type: Address });
     t.field("workAuthorization", { type: WorkAuthorization });
     t.list.field("emergencyContacts", { type: EmergencyContact });
-    // t.field("reference", { type: Reference });
-    t.list.field("reference", { type: Reference });
+    t.list.field("references", { type: Reference });
     t.list.field("documents", { type: Document });
     t.field("createdAt", { type: "String" });
     t.field("updatedAt", { type: "String" });
@@ -245,7 +243,7 @@ const Mutation = objectType({
         address: arg({
           type: "AddressInput", // Assuming you define the input type below
         }),
-        reference: list(
+        references: list(
           arg({
             type: "ReferenceInput", // Assuming you define the input type below
           })
@@ -293,8 +291,7 @@ const Mutation = objectType({
         employeeId: stringArg(),
         fileName: stringArg(),
         fileUrl: stringArg(),
-        documentType: arg({ type: "DocumentType" }),
-        status: arg({ type: "Status" }),
+        documentType: stringArg(), 
       },
       resolve: EmployeeResolvers.Mutation.uploadDocument, // Resolver for uploading a document
     });
