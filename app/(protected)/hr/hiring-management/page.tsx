@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import Sidebar from "@/components/Sidebar";
 import SendRegistrationToken from "@/components/SendRegistrationToken";
 import RegistrationTokenHistory from "@/components/RegistrationTokenHistory";
+import PendingApplications from "@/components/PendingApplications";
 
 const HiringManagement = () => {
   const [showHistory, setShowHistory] = useState(false);
@@ -24,6 +25,7 @@ const HiringManagement = () => {
           {showHistory ? "Hide History" : "Show History"}
         </button>
         {showHistory && <RegistrationTokenHistory />}
+        <PendingApplications />
       </section>
     </main>
   );
