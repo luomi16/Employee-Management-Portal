@@ -113,34 +113,36 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder;
-    // // Sign-up cases
-    // .addCase(signUpUser.pending, (state) => {
-    //   state.status = "loading";
-    //   state.error = null;
-    // })
-    // .addCase(signUpUser.fulfilled, (state, action) => {
-    //   state.status = "succeeded";
-    //   state.user = action.payload;
-    // })
-    // .addCase(signUpUser.rejected, (state, action) => {
-    //   state.status = "failed";
-    //   state.error = action.payload as string;
-    // })
 
-    // // Sign-in cases
-    // .addCase(signInUser.pending, (state) => {
-    //   state.status = "loading";
-    //   state.error = null;
-    // })
-    // .addCase(signInUser.fulfilled, (state, action) => {
-    //   state.status = "succeeded";
-    //  state.user = action.payload;
-    // })
-    //  .addCase(signInUser.rejected, (state, action) => {
-    //   state.status = "failed";
-    //   state.error = action.payload as string;
-    // });
+    builder
+      // // Sign-up cases
+      // .addCase(signUpUser.pending, (state) => {
+      //   state.status = "loading";
+      //   state.error = null;
+      // })
+      // .addCase(signUpUser.fulfilled, (state, action) => {
+      //   state.status = "succeeded";
+      //   state.user = action.payload;
+      // })
+      // .addCase(signUpUser.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.error = action.payload as string;
+      // })
+
+      // // Sign-in cases
+      // .addCase(signInUser.pending, (state) => {
+      //   state.status = "loading";
+      //   state.error = null;
+      // })
+      // .addCase(signInUser.fulfilled, (state, action) => {
+      //   state.status = "succeeded";
+      //  state.user = action.payload;
+      // })
+      //  .addCase(signInUser.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.error = action.payload as string;
+      // });
+
   },
 });
 

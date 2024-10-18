@@ -46,6 +46,7 @@ export default function SignInPage() {
         } else if (res.data.role === "HR") {
           router.push("/hr/hr-dashboard");
         }
+
       }
     } catch (err) {
       console.error("Login error:", err);
