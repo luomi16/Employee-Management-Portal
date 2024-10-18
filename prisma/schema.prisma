@@ -104,10 +104,13 @@ model WorkAuthorization {
 }
 
 model Document {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  employeeId String @db.ObjectId
-  fileName   String
-  fileUrl    String // Reference to file location (e.g., S3, server)
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId   String       @db.ObjectId
+  fileName     String
+  fileUrl      String // Reference to file location (e.g., S3, server)
+  status       Status
+  documentType DocumentType
+  feedback     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -118,13 +121,13 @@ model Document {
 }
 
 model RegistrationToken {
-  id              String    @id @default(auto()) @map("_id") @db.ObjectId
-  email           String    @unique
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  email           String   @unique
   name            String
-  token           String    @unique // Unique token for registration link
-  tokenExpiration DateTime  // The timestamp when the token will expire
-  isOnboarded     Boolean   @default(false) // Whether the employee has completed onboarding
-  createdAt       DateTime  @default(now()) // When the token was created
+  token           String   @unique // Unique token for registration link
+  tokenExpiration DateTime // The timestamp when the token will expire
+  isOnboarded     Boolean  @default(false) // Whether the employee has completed onboarding
+  createdAt       DateTime @default(now()) // When the token was created
 }
 
 model HRRecord {
@@ -191,4 +194,17 @@ enum VisaType {
   F1
   H4
   OTHER
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DocumentType {
+  OPT_RECEIPT
+  OPT_EAD
+  I_983
+  I_20
 }
