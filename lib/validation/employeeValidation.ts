@@ -90,7 +90,7 @@ export const employeeFormSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
   address: addressSchema,
   phone: z.string().min(9, "Phone number must be at least 9 digits"),
-  reference: z
+  references: z
     .array(referenceSchema).optional(),
     // .min(1, "At least one reference is required"),
   workAuthorization: workAuthorizationSchema,
