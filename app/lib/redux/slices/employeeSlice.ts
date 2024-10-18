@@ -39,7 +39,7 @@ const GET_EMPLOYEE_BY_ID = gql`
         zip
       }
       phone
-      reference {
+      references {
         id
         firstName
         lastName

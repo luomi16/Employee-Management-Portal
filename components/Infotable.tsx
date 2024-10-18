@@ -60,14 +60,6 @@ export default function Infotable({ employee }: InfotableProps) {
           <dd className="sm:col-span-2 text-gray-200">{employee.identity}</dd>
         </div>
 
-        {/* Phone Information */}
-        {employee.phone && (
-          <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-            <dt className="font-medium text-white">Phone</dt>
-            <dd className="sm:col-span-2 text-gray-200">{employee.phone}</dd>
-          </div>
-        )}
-
         {/* Address Information */}
         {employee.address && (
           <>
@@ -100,10 +92,10 @@ export default function Infotable({ employee }: InfotableProps) {
         )}
 
         {/* Reference Information */}
-        {employee.reference && employee.reference.length > 0 && (
+        {employee.references && employee.references.length > 0 && (
           <>
             <h2 className="text-2xl font-bold mt-4">References</h2>
-            {employee.reference.map((ref, index) => (
+            {employee.references.map((ref, index) => (
               <div key={index}>
                 <h3 className="text-xl font-semibold mt-2">
                   Reference {index + 1}
