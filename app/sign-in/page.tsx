@@ -89,12 +89,6 @@ export default function SignInPage() {
               className="text-red-500"
             />
             <SubmitButton pendingText="Logging in...">Login</SubmitButton>
-            <Link
-              className="text-gray-400 hover:underline mt-4"
-              href="/sign-up"
-            >
-              Don't have an account? Sign Up
-            </Link>
           </Form>
         )}
       </Formik>

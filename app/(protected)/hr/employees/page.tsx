@@ -7,9 +7,19 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { fetchAllEmployees } from "../../../lib/redux/slices/employeeSlice";
 import { RootState, useAppDispatch } from "../../../lib/redux/store";
+import { redirect } from "next/navigation";
 
 const EmployeesPage = () => {
   const dispatch = useAppDispatch();
+
+  const user = useSelector((state: RootState) => state.user.user); // Get the user from Redux state
+
+  useEffect(() => {
+    // Check user role and redirect if not HR
+    if (user && user.role !== "HR") {
+      redirect("/unauthorized")
+    }
+  }, [user]);
 
   // State for search input
   const [searchTerm, setSearchTerm] = useState("");

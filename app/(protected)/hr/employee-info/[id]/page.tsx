@@ -4,12 +4,21 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { fetchEmployeeById } from "../../../../lib/redux/slices/employeeSlice";
 import { RootState, useAppDispatch } from "../../../../lib/redux/store";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 
 import Infotable from "@/components/Infotable";
 
 const EmployeeInfoPage = () => {
   const dispatch = useAppDispatch();
+
+  const user = useSelector((state: RootState) => state.user.user); // Get the user from Redux state
+
+  useEffect(() => {
+    // Check user role and redirect if not HR
+    if (user && user.role !== "HR") {
+      redirect("/unauthorized")
+    }
+  }, [user]);
 
   const employee = useSelector((state: RootState) => state.employee.employee);
   const status = useSelector((state: RootState) => state.employee.status);

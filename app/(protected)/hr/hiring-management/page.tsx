@@ -7,7 +7,21 @@ import SendRegistrationToken from "@/components/SendRegistrationToken";
 import RegistrationTokenHistory from "@/components/RegistrationTokenHistory";
 import PendingApplications from "@/components/PendingApplications";
 
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/lib/redux/store"; // Adjust the path as needed
+import { redirect } from "next/navigation";
+
 const HiringManagement = () => {
+  const user = useSelector((state: RootState) => state.user.user); // Get the user from Redux state
+
+  useEffect(() => {
+    // Check user role and redirect if not HR
+    if (user && user.role !== "HR") {
+      redirect("/unauthorized")
+    }
+  }, [user]);
+
   const [showHistory, setShowHistory] = useState(false);
 
   return (
