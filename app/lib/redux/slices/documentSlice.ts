@@ -5,8 +5,8 @@ import build from "next/dist/build";
 
 
 const UPLOAD_DOCUMENT = gql`
-  mutation UploadDocument($employeeId: String, $fileName: String, $fileUrl: String, $documentType: String) {
-    uploadDocument(employeeId: $employeeId, fileName: $fileName, fileUrl: $fileUrl, documentType: $documentType) {
+  mutation UploadDocument($employeeId: String, $fileName: String, $fileUrl: String, $documentType: String, $status: String) {
+    uploadDocument(employeeId: $employeeId, fileName: $fileName, fileUrl: $fileUrl, documentType: $documentType, status: $status) {
       id
       fileUrl
       fileName
@@ -16,21 +16,7 @@ const UPLOAD_DOCUMENT = gql`
     }
   }
 `;
-// Async thunk for uploading a document
-// export const uploadDocument = createAsyncThunk(
-//   "document/uploadDocument",
-//   async ({ employeeId, fileName, fileUrl, documentType }: { employeeId: string; fileName: string; fileUrl: string; documentType: string }, thunkAPI) => {
-//     try {
-//       const { data } = await client.mutate({
-//         mutation: UPLOAD_DOCUMENT,
-//         variables: { employeeId, fileName, fileUrl, documentType },
-//       });
-//       return data.uploadDocument;
-//     } catch (error: any) {
-//       return thunkAPI.rejectWithValue(error.message);
-//     }
-//   }
-// );
+
 
 export const uploadDocument = createAsyncThunk<
   Document,
@@ -39,14 +25,13 @@ export const uploadDocument = createAsyncThunk<
   "document/uploadDocument",
   async ({ employeeId, fileName, fileUrl, documentType }, thunkAPI) => {
     try {
-      // Ensure employeeId is in the correct format before making the request
       if (employeeId.length !== 24 || !/^[0-9a-fA-F]{24}$/.test(employeeId)) {
         throw new Error("Invalid employee ID format. Must be a 24-character hex string.");
       }
 
       const { data } = await client.mutate({
         mutation: UPLOAD_DOCUMENT,
-        variables: { employeeId, fileName, fileUrl, documentType },
+        variables: { employeeId, fileName, fileUrl, documentType, status: "PENDING"},
       });
 
       return data.uploadDocument;
@@ -104,26 +89,6 @@ const documentSlice = createSlice({
       });
   },
 });
-
-
-// const getDocumentStatusMessage = (docType: string) => {
-//   const document = documents.find((doc) => doc.documentType === docType);
-//   if (!document) return "";
-
-//   switch (document.status) {
-//     case "PENDING":
-//       return `Waiting for HR to approve your ${docType}`;
-//     case "APPROVED":
-//       if (docType === "OPT_RECEIPT") return "Please upload a copy of your OPT EAD.";
-//       if (docType === "OPT_EAD") return "Please download and fill out the I-983 form.";
-//       if (docType === "I_983") return "Please send the I-983 along all necessary documents to your school and upload the new I-20.";
-//       if (docType === "I_20") return "All documents have been approved.";
-//       break;
-//     case "REJECTED":
-//       return `HR feedback: ${document.feedback}`;
-//   }
-//   return "";
-// };
 
 
 
