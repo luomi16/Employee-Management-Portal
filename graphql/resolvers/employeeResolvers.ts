@@ -54,7 +54,7 @@ export const EmployeeResolvers = {
         gender: Gender;
         identity: Identity;
         userId: string;
-        phone: string;
+        phone?: string;
         address: {
           streetName: string;
           city: string;
@@ -103,7 +103,7 @@ export const EmployeeResolvers = {
             middleName: args.middleName || null,
             prefferedName: args.prefferedName || null,
             email: args.email,
-            phone: args.phone,
+            phone: args.phone || null,
             ssn: args.ssn,
             birthday: new Date(args.birthday),
             gender: args.gender,

@@ -13,45 +13,50 @@ import { employeeFormSchema } from "@/lib/validation/employeeValidation";
 // GraphQL Mutation for creating an employee
 const CREATE_EMPLOYEE_MUTATION = gql`
   mutation CreateEmployee(
+    $userId: String!
+    $email: String!
     $firstName: String!
     $lastName: String!
     $middleName: String
     $prefferedName: String
-    $email: String!
+    $profilePic: String
+    $address: AddressInput
+    $phone: String
     $ssn: String!
-    $birthday: String!
+    $birthday: DateTime!
     $gender: Gender!
     $identity: Identity!
-    $userId: String!
-    $address: AddressInput!
-    $phone: PhoneNumberInput!
-    $references: [ReferenceInput!]!
-    $workAuthorization: WorkAuthorizationInput!
-    $documents: [DocumentInput!]!
-    $emergencyContacts: [EmergencyContactInput!]!
+    $workAuthorization: WorkAuthorizationInput
+    $emergencyContacts: [EmergencyContactInput!]
+    $reference: [ReferenceInput!]
+    $onboardingStatus: OnboardingStatus!
+    $documents: [DocumentInput!]
   ) {
     createEmployee(
+      userId: $userId
+      email: $email
       firstName: $firstName
       lastName: $lastName
       middleName: $middleName
       prefferedName: $prefferedName
-      email: $email
+      profilePic: $profilePic
+      address: $address
+      phone: $phone
       ssn: $ssn
       birthday: $birthday
       gender: $gender
       identity: $identity
-      userId: $userId
-      address: $address
-      phone: $phone
-      references: $references
       workAuthorization: $workAuthorization
-      documents: $documents
       emergencyContacts: $emergencyContacts
+      reference: $reference
+      onboardingStatus: $onboardingStatus
+      documents: $documents
     ) {
       id
+      email
       firstName
       lastName
-      email
+      onboardingStatus
     }
   }
 `;
@@ -87,15 +92,13 @@ const CreateEmployeePage = () => {
     setValue("identity", "OTHER");
 
     // Address
-    setValue("address.building", "101 Main St");
     setValue("address.streetName", "Elm Street");
     setValue("address.city", "Los Angeles");
     setValue("address.state", "CA");
     setValue("address.zip", "90001");
 
     // Phone Numbers
-    setValue("phone.cellPhone", "123-456-7890");
-    setValue("phone.workPhone", "987-654-3210");
+    setValue("phone", "123-456-7890");
 
     // Work Authorization
     setValue("workAuthorization.visaType", "H1B");
@@ -184,35 +187,35 @@ const CreateEmployeePage = () => {
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
+    console.log("表单提交", data);
     try {
       const variables = {
         ...data,
         userId: user?.id,
-        address: data.address,
-        phone: data.phone,
-        documents: data.documents.length > 0 ? data.documents : [],
-        emergencyContacts:
-          data.emergencyContacts.length > 0 ? data.emergencyContacts : [],
-        workAuthorization: data.workAuthorization
-          ? data.workAuthorization
-          : null,
+        birthday: new Date(data.birthday).toISOString(),
+        onboardingStatus: "PENDING",
+        reference: data.reference?.length > 0 ? data.reference : [],
+        emergencyContacts: data.emergencyContacts?.length > 0 ? data.emergencyContacts : [],
+        documents: data.documents?.length > 0 ? data.documents : [],
+        workAuthorization: data.workAuthorization || null,
       };
-
+  
+      console.log("发送到服务器的数据", variables);
+  
       const response = await request(
-        // "/api/graphql",
         "http://localhost:3000/api/graphql",
         CREATE_EMPLOYEE_MUTATION,
         variables
       );
-      console.log(response);
+      console.log("服务器响应", response);
       // Reset the form after successful submission
       reset();
       // Redirect or show success message
-      alert("Employee created successfully!");
+      alert("员工创建成功！");
       router.push("/");
     } catch (error) {
-      console.error(error);
-      alert("Error creating employee.");
+      console.error("创建员工时出错", error);
+      alert("创建员工时出错：" + (error instanceof Error ? error.message : String(error)));
     }
   };
 
@@ -470,33 +473,15 @@ const CreateEmployeePage = () => {
                 Cell Phone
               </label>
               <input
-                {...register("phone.cellPhone", { required: true })}
+                {...register("phone", { required: true })}
                 className="text-gray-700 p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 placeholder="123-456-7890"
               />
-              {get(errors, "phone.cellPhone") && (
+              {get(errors, "phone") && (
                 <p className="text-red-500">
-                  {typeof get(errors, "phone.cellPhone.message") === "string"
-                    ? get(errors, "phone.cellPhone.message")
+                  {typeof get(errors, "phone.message") === "string"
+                    ? get(errors, "phone.message")
                     : "Invalid cell phone number"}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 p-2">
-                Work Phone
-              </label>
-              <input
-                {...register("phone.workPhone")}
-                className="text-gray-700 p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                placeholder="123-456-7890"
-              />
-              {get(errors, "phone.workPhone") && (
-                <p className="text-red-500">
-                  {typeof get(errors, "phone.workPhone.message") === "string"
-                    ? get(errors, "phone.workPhone.message")
-                    : "Invalid work phone number"}
                 </p>
               )}
             </div>

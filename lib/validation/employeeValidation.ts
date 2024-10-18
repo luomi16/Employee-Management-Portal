@@ -8,17 +8,10 @@ const identityEnum = z.enum(["CITIZEN", "GREENCARD", "OTHER"]);
 
 // Address Input Validation
 const addressSchema = z.object({
-  building: z.string().min(1, "Building is required"),
   streetName: z.string().min(1, "Street Name is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
   zip: z.string().min(5, "Zip code must be at least 5 characters"),
-});
-
-// Phone Number Input Validation
-const phoneSchema = z.object({
-  cellPhone: z.string().min(1, "Cell Phone is required"),
-  workPhone: z.string().optional(),
 });
 
 // Reference Input Validation
@@ -64,9 +57,9 @@ export const employeeFormSchema = z.object({
   gender: genderEnum,
   identity: identityEnum,
   userId: z.string().min(1, "User ID is required"),
-  address: z.array(addressSchema).min(1, "At least one address is required"),
-  phone: z.array(phoneSchema).min(1, "At least one phone number is required"),
-  reference: referenceSchema,
+  address: addressSchema,
+  phone: z.string().min(1, "At least one phone number is required"),
+  reference: z.array(referenceSchema).min(1, "At least one reference is required"),
   workAuthorization: workAuthorizationSchema,
   documents: z.array(documentSchema).min(1, "At least one document is required"),
   emergencyContacts: z.array(emergencyContactSchema).min(1, "At least one emergency contact is required"),
