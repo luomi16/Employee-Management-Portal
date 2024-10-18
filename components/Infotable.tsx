@@ -33,7 +33,11 @@ export default function Infotable({ employee }: InfotableProps) {
 
         <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
           <dt className="font-medium text-white">Birthday</dt>
-          <dd className="sm:col-span-2 text-gray-200">{employee.birthday}</dd>
+          <dd className="sm:col-span-2 text-gray-200">
+            {new Date(parseInt(employee.birthday, 10)).toLocaleDateString(
+              "en-CA"
+            )}{" "}
+          </dd>
         </div>
 
         <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
@@ -44,6 +48,11 @@ export default function Infotable({ employee }: InfotableProps) {
         <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
           <dt className="font-medium text-white">Email</dt>
           <dd className="sm:col-span-2 text-gray-200">{employee.email}</dd>
+        </div>
+
+        <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+          <dt className="font-medium text-white">Phone</dt>
+          <dd className="sm:col-span-2 text-gray-200">{employee.phone}</dd>
         </div>
 
         <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
@@ -144,14 +153,18 @@ export default function Infotable({ employee }: InfotableProps) {
             <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
               <dt className="font-medium text-white">Start Date</dt>
               <dd className="sm:col-span-2 text-gray-200">
-                {employee.workAuthorization.startDate}
+                {new Date(
+                  parseInt(employee.workAuthorization.startDate, 10)
+                ).toLocaleDateString("en-CA")}{" "}
               </dd>
             </div>
 
             <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
               <dt className="font-medium text-white">End Date</dt>
               <dd className="sm:col-span-2 text-gray-200">
-                {employee.workAuthorization.endDate}
+                {new Date(
+                  parseInt(employee.workAuthorization.endDate, 10)
+                ).toLocaleDateString("en-CA")}{" "}
               </dd>
             </div>
 

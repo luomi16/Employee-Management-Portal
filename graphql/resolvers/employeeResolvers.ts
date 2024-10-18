@@ -1,11 +1,27 @@
-import { PrismaClient, Gender, Identity, VisaType, Status, DocumentType} from "@prisma/client";
+import {
+  PrismaClient,
+  Gender,
+  Identity,
+  VisaType,
+  OnboardingStatus,
+  Status,
+  DocumentType,
+} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export const EmployeeResolvers = {
   Query: {
     employees: async () => {
-      return prisma.employee.findMany();
+      return prisma.employee.findMany({
+        include: {
+          address: true,
+          workAuthorization: true,
+          emergencyContacts: true,
+          reference: true,
+          documents: true,
+        },
+      });
     },
     employeeById: async (_parent: any, args: { id: string }) => {
       console.log(args.id);
@@ -200,14 +216,19 @@ export const EmployeeResolvers = {
         return completeEmployee;
       } catch (error: unknown) {
         console.error("Error creating employee:", error);
-        throw new Error(`Failed to create employee: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(
+          `Failed to create employee: ${error instanceof Error ? error.message : String(error)}`
+        );
       }
     },
 
-    updateEmployee: async (_parent: any, args: { id: string; data: any }) => {
+    updateEmployee: async (
+      _parent: any,
+      args: { id: string; onboardingStatus: OnboardingStatus }
+    ) => {
       return prisma.employee.update({
         where: { id: args.id },
-        data: args.data,
+        data: { onboardingStatus: args.onboardingStatus },
       });
     },
 
@@ -232,7 +253,13 @@ export const EmployeeResolvers = {
 
     uploadDocument: async (
       _parent: any,
-      args: { employeeId: string; fileName: string; fileUrl: string; documentType: DocumentType; status: Status;}
+      args: {
+        employeeId: string;
+        fileName: string;
+        fileUrl: string;
+        documentType: DocumentType;
+        status: Status;
+      }
     ) => {
       return prisma.document.create({
         data: {

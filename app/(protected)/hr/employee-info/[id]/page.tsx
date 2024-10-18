@@ -29,13 +29,41 @@ const EmployeeInfoPage = () => {
     }
   }, [dispatch, employeeId]);
 
+  // const handleApprove = () => {
+  //   if (employee && employee.id) {
+  //     dispatch(updateEmployeeStatus({ id: employee.id, status: "COMPLETED" }));
+  //   }
+  // };
+
   if (status === "loading") return <p>Loading...</p>;
   if (status === "failed") return <p>Error: {error}</p>;
+
+  console.log(employee);
 
   return (
     <section className="main-container">
       {employee ? (
-        <Infotable employee={employee} />
+        <>
+          <Infotable employee={employee} />
+
+          {/* Conditionally render the buttons based on onboardingStatus */}
+          {employee.onboardingStatus === "PENDING" && (
+            <div className="flex space-x-4 mt-4">
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                // onClick={handleReject}
+              >
+                Reject
+              </button>
+              <button
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                // onClick={handleApprove}
+              >
+                Approve
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <p>No employee data found.</p>
       )}
