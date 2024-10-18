@@ -188,7 +188,7 @@ export const EmployeeResolvers = {
             address: true,
             workAuthorization: true,
             emergencyContacts: true,
-            reference: true,
+            references: true,
             documents: true,
           },
         });
