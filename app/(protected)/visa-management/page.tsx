@@ -6,19 +6,16 @@ import { RootState, useAppDispatch } from "../../lib/redux/store";
 import { uploadDocument, fetchDocuments } from "../../lib/redux/slices/documentSlice";
 import { fetchEmployeeIdByUserId, fetchEmployeeById } from "../../lib/redux/slices/employeeSlice";
 import { DocumentType } from "@prisma/client";
-import ESidebar from "@/components/ESidebar";
 
 const VisaManagementPage = () => {
   const dispatch = useAppDispatch();
   const user = useSelector((state: RootState) => state.user.user);
-
   const { documents, loading: documentLoading, error: documentError } = useSelector(
     (state: RootState) => state.document
   );
   const { employeeId, status: employeeStatus, error: employeeError } = useSelector(
     (state: RootState) => state.employee
   );
-
 
   useEffect(() => {
     if (user && user.id && !employeeId) {
@@ -48,7 +45,6 @@ const VisaManagementPage = () => {
       case "PENDING":
         return `Waiting for HR to approve your ${getDisplayName(docType)}`;
       case "APPROVED":
-
         if (docType === "OPT_RECEIPT") return `Approved. Please upload a copy of your OPT EAD.`;
         if (docType === "OPT_EAD") return `Approved. Please upload your I-983 form.`;
         if (docType === "I_983") return `Approved. Please upload your I-20.`;
@@ -60,18 +56,13 @@ const VisaManagementPage = () => {
     return "";
   };
 
-  const handleFileUpload = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    docType: DocumentType
-  ) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, docType: DocumentType) => {
     if (event.target.files && event.target.files[0] && employeeId) {
       const file = event.target.files[0];
       const fileName = file.name;
       const fileUrl = URL.createObjectURL(file);
 
-      dispatch(
-        uploadDocument({ employeeId, fileName, fileUrl, documentType: docType })
-      );
+      dispatch(uploadDocument({ employeeId, fileName, fileUrl, documentType: docType }));
     }
   };
 
@@ -80,9 +71,7 @@ const VisaManagementPage = () => {
     const index = previousDocs.indexOf(docType);
     if (index === 0) return true;
 
-
     const previousDocument = getLatestDocument(previousDocs[index - 1]);
-
     return previousDocument && previousDocument.status === "APPROVED";
   };
 
@@ -106,12 +95,10 @@ const VisaManagementPage = () => {
     }
   };
 
-  if (employeeStatus === "loading")
-    return <p>Loading employee information...</p>;
+  if (employeeStatus === "loading") return <p>Loading employee information...</p>;
   if (employeeError) return <p>Error: {employeeError}</p>;
 
   return (
-
     <section className="main-container">
       <h1 className="header-text text-3xl font-bold mt-4">Manage Your OPT Documents</h1>
       {(Object.values(DocumentType) as DocumentType[]).map((docType) => (
@@ -173,7 +160,6 @@ const VisaManagementPage = () => {
       ))}
       {documentError && <p className="text-red-500 mt-4">{documentError}</p>}
     </section>
-
   );
 };
 
