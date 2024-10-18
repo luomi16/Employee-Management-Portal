@@ -12,6 +12,7 @@
   "email": "sophia.lee@example.com",
   "password": "qwerty123",
   "image": "https://avatar.iran.liara.run/public/18"
+  "role":"HR"
 },
 {
   "username": "Michael",

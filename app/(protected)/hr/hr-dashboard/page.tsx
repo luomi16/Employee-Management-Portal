@@ -1,9 +1,12 @@
 import { auth } from "@/auth";
 import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
+import { getUserRole } from "@/app/lib/actions";
+import { redirect } from "next/navigation";
 
 const HRDashboard = async () => {
   const session = await auth();
+
   return (
     <main className="flex">
       <section>

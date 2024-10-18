@@ -12,33 +12,19 @@ export default async function Header() {
 
   return (
     <header className="p-6 bg-gray-800 shadow-md">
-      <nav className="flex items-center space-x-6 w-full">
-        <Link href="/" className="text-white hover:underline">
-          Home
-        </Link>
-        <Link href="/dashboard" className="text-white hover:underline">
-          Dashboard
-        </Link>
-        <Link href="/personal-info" className="text-white hover:underline">
-          Personal Info
-        </Link>
-        <Link href="/visa-management" className="text-white hover:underline">
-          Visa
-        </Link>
-        <Link
-          href="/hr/hiring-management"
-          className="text-white hover:underline"
-        >
-          Hire
-        </Link>
-        <Link
-          href="/onboarding-application"
-          className="text-white hover:underline"
-        >
-          Onboarding
-        </Link>
-
-        <div className="ml-auto flex items-center space-x-6">
+      <nav className="flex items-center justify-between w-full">
+        {" "}
+        {/* Use justify-between for alignment */}
+        <div className="flex items-center space-x-6">
+          {" "}
+          {/* Group navigation items */}
+          <Link href="/" className="text-white hover:underline">
+            Home
+          </Link>
+        </div>
+        <div className="flex items-center space-x-6">
+          {" "}
+          {/* Align sign in/out section */}
           {session?.user ? (
             <form
               action={async () => {

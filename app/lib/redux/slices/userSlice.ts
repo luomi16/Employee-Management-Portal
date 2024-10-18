@@ -71,6 +71,7 @@ interface User {
   id: string;
   username: string;
   email: string;
+  role: string;
 }
 
 // Try to parse the user from localStorage or return null
@@ -103,7 +104,7 @@ const userSlice = createSlice({
       state.user = action.payload;
       localStorage.setItem("user", JSON.stringify(action.payload)); // Persist user data in localStorage
       // state.isAuthenticated = true;
-      console.log(action.payload);
+      console.log("action.payload", action.payload);
     },
     removeUser: (state) => {
       state.user = null;
