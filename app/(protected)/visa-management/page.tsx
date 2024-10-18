@@ -222,19 +222,16 @@ import {
   fetchEmployeeById,
 } from "../../lib/redux/slices/employeeSlice";
 import { DocumentType } from "@prisma/client";
-import ESidebar from "@/components/ESidebar";
 
 const VisaManagementPage = () => {
   const dispatch = useAppDispatch();
   const user = useSelector((state: RootState) => state.user.user);
-
   const { documents, loading: documentLoading, error: documentError } = useSelector(
     (state: RootState) => state.document
   );
   const { employeeId, status: employeeStatus, error: employeeError } = useSelector(
     (state: RootState) => state.employee
   );
-
 
   useEffect(() => {
     if (user && user.id && !employeeId) {
@@ -249,6 +246,15 @@ const VisaManagementPage = () => {
     }
   }, [dispatch, employeeId]);
 
+
+  // Helper function to get the latest document of a type
+  const getLatestDocument = (docType: DocumentType) => {
+    return documents
+      .filter((doc) => doc.documentType === docType)
+      .sort((a, b) => new Date(a.createdAt).getTime() < new Date(b.createdAt).getTime() ? 1 : -1)[0];
+  };
+
+
   const getDocumentStatusMessage = (docType: DocumentType) => {
     const document = documents.find((doc) => doc.documentType === docType);
     if (!document) return "";
@@ -257,30 +263,26 @@ const VisaManagementPage = () => {
       case "PENDING":
         return `Waiting for HR to approve your ${getDisplayName(docType)}`;
       case "APPROVED":
-
         if (docType === "OPT_RECEIPT") return `Approved. Please upload a copy of your OPT EAD.`;
         if (docType === "OPT_EAD") return `Approved. Please upload your I-983 form.`;
         if (docType === "I_983") return `Approved. Please upload your I-20.`;
         if (docType === "I_20") return `All documents have been approved, thank you.`;
         break;
       case "REJECTED":
-        return `HR feedback: ${document.feedback}`;
+
+        return `Rejected: ${document.feedback}`;
+
     }
     return "";
   };
 
-  const handleFileUpload = (
-    event: React.ChangeEvent<HTMLInputElement>,
-    docType: DocumentType
-  ) => {
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, docType: DocumentType) => {
     if (event.target.files && event.target.files[0] && employeeId) {
       const file = event.target.files[0];
       const fileName = file.name;
       const fileUrl = URL.createObjectURL(file);
 
-      dispatch(
-        uploadDocument({ employeeId, fileName, fileUrl, documentType: docType })
-      );
+      dispatch(uploadDocument({ employeeId, fileName, fileUrl, documentType: docType }));
     }
   };
 
@@ -289,9 +291,7 @@ const VisaManagementPage = () => {
     const index = previousDocs.indexOf(docType);
     if (index === 0) return true;
 
-
     const previousDocument = getLatestDocument(previousDocs[index - 1]);
-
     return previousDocument && previousDocument.status === "APPROVED";
   };
 
@@ -310,23 +310,49 @@ const VisaManagementPage = () => {
     }
   };
 
-  if (employeeStatus === "loading")
-    return <p>Loading employee information...</p>;
+  if (employeeStatus === "loading") return <p>Loading employee information...</p>;
   if (employeeError) return <p>Error: {employeeError}</p>;
 
   return (
-
     <section className="main-container">
       <h1 className="header-text text-3xl font-bold mt-4">Manage Your OPT Documents</h1>
       {(Object.values(DocumentType) as DocumentType[]).map((docType) => (
         <div key={docType} className="document-section mt-4">
           <h2 className="text-xl font-semibold">{getDisplayName(docType)}</h2>
           <p className="mt-2 text-lg">{getDocumentStatusMessage(docType)}</p>
-          {/* Highlight the file name if the latest document is approved */}
-          {getLatestDocument(docType)?.status === "APPROVED" && (
-            <p className="mt-2 text-sm text-green-500 font-bold">
-              Approved File: {getLatestDocument(docType)?.fileName}
+          {/* Display the file name in green based on status */}
+          {getLatestDocument(docType)?.status && (
+            <p className={`mt-2 text-sm font-bold ${
+              getLatestDocument(docType)?.status === "APPROVED"
+                ? "text-green-500"
+                : getLatestDocument(docType)?.status === "REJECTED"
+                ? "text-red-500"
+                : "text-yellow-500"
+            }`}>
+              {getLatestDocument(docType)?.status === "APPROVED" && `Approved File: ${getLatestDocument(docType)?.fileName}`}
+              {getLatestDocument(docType)?.status === "REJECTED" && `Rejected File: ${getLatestDocument(docType)?.fileName}`}
+              {getLatestDocument(docType)?.status === "PENDING" && `Pending File: ${getLatestDocument(docType)?.fileName}`}
             </p>
+          )}
+          {/* Preview and download links if a file URL is available */}
+          {getLatestDocument(docType)?.fileUrl && (
+            <div className="mt-2">
+              <a
+                href={getLatestDocument(docType)?.fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline mr-4"
+              >
+                Preview
+              </a>
+              <a
+                href={getLatestDocument(docType)?.fileUrl}
+                download={getLatestDocument(docType)?.fileName}
+                className="text-blue-500 underline"
+              >
+                Download
+              </a>
+            </div>
           )}
           {/* Show the upload input only if the document is not approved */}
           {canUploadDocument(docType) && !isUploadDisabled(docType) ? (
@@ -349,7 +375,6 @@ const VisaManagementPage = () => {
       ))}
       {documentError && <p className="text-red-500 mt-4">{documentError}</p>}
     </section>
-
   );
 };
 
