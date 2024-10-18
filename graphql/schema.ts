@@ -9,7 +9,8 @@ import {
   list,
 } from "nexus";
 import path from "path";
-import { UserResolvers } from "./resolvers"; // Import resolvers
+import { UserResolvers } from "./resolvers/userResolvers"; // Import resolvers
+import { EmployeeResolvers } from "./resolvers/employeeResolvers"; // Import resolvers
 
 // Define the User type
 const User = objectType({
@@ -174,25 +175,25 @@ const Query = objectType({
 
     t.list.field("employees", {
       type: "Employee",
-      resolve: UserResolvers.Query.employees, // Resolver for fetching all employees
+      resolve: EmployeeResolvers.Query.employees, // Resolver for fetching all employees
     });
 
     t.field("employeeById", {
       type: "Employee",
       args: { id: stringArg() },
-      resolve: UserResolvers.Query.employeeById, // Resolver for fetching an employee by ID
+      resolve: EmployeeResolvers.Query.employeeById, // Resolver for fetching an employee by ID
     });
 
     t.field("employeeByUserId", {
       type: "Employee",
       args: { userId: stringArg() },
-      resolve: UserResolvers.Query.employeeByUserId, // Resolver for fetching an employee by UserID
+      resolve: EmployeeResolvers.Query.employeeByUserId, // Resolver for fetching an employee by UserID
     });
 
     t.list.field("employeeDocuments", {
       type: "Document",
       args: { employeeId: stringArg() },
-      resolve: UserResolvers.Query.employeeDocuments, // Resolver for fetching documents of an employee
+      resolve: EmployeeResolvers.Query.employeeDocuments, // Resolver for fetching documents of an employee
     });
 
     t.list.field("registrationTokenHistory", {
@@ -263,7 +264,7 @@ const Mutation = objectType({
           })
         ),
       },
-      resolve: UserResolvers.Mutation.createEmployee, // Resolver for creating an employee
+      resolve: EmployeeResolvers.Mutation.createEmployee, // Resolver for creating an employee
     });
 
     t.field("updateEmployee", {
@@ -272,7 +273,7 @@ const Mutation = objectType({
         id: stringArg(),
         data: stringArg(), // Accepting JSON-like data for updates
       },
-      resolve: UserResolvers.Mutation.updateEmployee, // Resolver for updating an employee
+      resolve: EmployeeResolvers.Mutation.updateEmployee, // Resolver for updating an employee
     });
 
     t.field("addWorkAuthorization", {
@@ -283,7 +284,7 @@ const Mutation = objectType({
         startDate: stringArg(),
         endDate: stringArg(),
       },
-      resolve: UserResolvers.Mutation.addWorkAuthorization, // Resolver for adding work authorization
+      resolve: EmployeeResolvers.Mutation.addWorkAuthorization, // Resolver for adding work authorization
     });
 
     t.field("uploadDocument", {
@@ -294,7 +295,7 @@ const Mutation = objectType({
         fileUrl: stringArg(),
         documentType: stringArg(), 
       },
-      resolve: UserResolvers.Mutation.uploadDocument, // Resolver for uploading a document
+      resolve: EmployeeResolvers.Mutation.uploadDocument, // Resolver for uploading a document
     });
 
     t.field("sendRegistrationToken", {
