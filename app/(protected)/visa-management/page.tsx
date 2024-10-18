@@ -30,14 +30,12 @@ const VisaManagementPage = () => {
     }
   }, [dispatch, employeeId]);
 
-
   // Helper function to get the latest document of a type
   const getLatestDocument = (docType: DocumentType) => {
     return documents
       .filter((doc) => doc.documentType === docType)
       .sort((a, b) => new Date(a.createdAt).getTime() < new Date(b.createdAt).getTime() ? 1 : -1)[0];
   };
-
 
   const getDocumentStatusMessage = (docType: DocumentType) => {
     const document = getLatestDocument(docType);
@@ -53,7 +51,7 @@ const VisaManagementPage = () => {
         if (docType === "I_20") return `All documents have been approved, thank you.`;
         break;
       case "REJECTED":
-        return `Rejected: ${document.feedback}`; // Display rejection feedback
+        return `Rejected: ${document.feedback}`;
     }
     return "";
   };
@@ -107,11 +105,39 @@ const VisaManagementPage = () => {
         <div key={docType} className="document-section mt-4">
           <h2 className="text-xl font-semibold">{getDisplayName(docType)}</h2>
           <p className="mt-2 text-lg">{getDocumentStatusMessage(docType)}</p>
-          {/* Highlight the file name if the latest document is approved */}
-          {getLatestDocument(docType)?.status === "APPROVED" && (
-            <p className="mt-2 text-sm text-green-500 font-bold">
-              Approved File: {getLatestDocument(docType)?.fileName}
+          {/* Display the file name in green based on status */}
+          {getLatestDocument(docType)?.status && (
+            <p className={`mt-2 text-sm font-bold ${
+              getLatestDocument(docType)?.status === "APPROVED"
+                ? "text-green-500"
+                : getLatestDocument(docType)?.status === "REJECTED"
+                ? "text-red-500"
+                : "text-yellow-500"
+            }`}>
+              {getLatestDocument(docType)?.status === "APPROVED" && `Approved File: ${getLatestDocument(docType)?.fileName}`}
+              {getLatestDocument(docType)?.status === "REJECTED" && `Rejected File: ${getLatestDocument(docType)?.fileName}`}
+              {getLatestDocument(docType)?.status === "PENDING" && `Pending File: ${getLatestDocument(docType)?.fileName}`}
             </p>
+          )}
+          {/* Preview and download links if a file URL is available */}
+          {getLatestDocument(docType)?.fileUrl && (
+            <div className="mt-2">
+              <a
+                href={getLatestDocument(docType)?.fileUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline mr-4"
+              >
+                Preview
+              </a>
+              <a
+                href={getLatestDocument(docType)?.fileUrl}
+                download={getLatestDocument(docType)?.fileName}
+                className="text-blue-500 underline"
+              >
+                Download
+              </a>
+            </div>
           )}
           {/* Show the upload input only if the document is not approved */}
           {canUploadDocument(docType) && !isUploadDisabled(docType) ? (

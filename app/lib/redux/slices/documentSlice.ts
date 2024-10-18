@@ -79,6 +79,7 @@ export const uploadDocument = createAsyncThunk<
 
 
 interface Document {
+  createdAt: string | number | Date;
   id: string;
   fileName: string;
   fileUrl: string;
