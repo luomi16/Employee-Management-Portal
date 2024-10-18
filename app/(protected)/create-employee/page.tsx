@@ -73,87 +73,87 @@ const CreateEmployeePage = () => {
     watch,
     setValue,
   } = useForm({ resolver: zodResolver(employeeFormSchema) });
-  // // Hardcode 虚拟数据
-  // useEffect(() => {
-  //   // Employee basic info
-  //   setValue("firstName", "John");
-  //   setValue("lastName", "Doe");
-  //   setValue("middleName", "Michael");
-  //   setValue("preferredName", "Johnny");
-  //   setValue("email", "john.doe@example.com");
-  //   setValue("ssn", "123-45-6789");
-  //   setValue("birthday", "1990-01-01");
-  //   setValue("gender", "MALE");
-  //   setValue("identity", "OTHER");
+  // Hardcode 虚拟数据
+  useEffect(() => {
+    // Employee basic info
+    setValue("firstName", "John");
+    setValue("lastName", "Doe");
+    setValue("middleName", "Michael");
+    setValue("preferredName", "Johnny");
+    setValue("email", "john.doe@example.com");
+    setValue("ssn", "123-45-6789");
+    setValue("birthday", "1990-01-01");
+    setValue("gender", "MALE");
+    setValue("identity", "OTHER");
 
-  //   // Address
-  //   setValue("address.building", "101 Main St");
-  //   setValue("address.streetName", "Elm Street");
-  //   setValue("address.city", "Los Angeles");
-  //   setValue("address.state", "CA");
-  //   setValue("address.zip", "90001");
+    // Address
+    setValue("address.building", "101 Main St");
+    setValue("address.streetName", "Elm Street");
+    setValue("address.city", "Los Angeles");
+    setValue("address.state", "CA");
+    setValue("address.zip", "90001");
 
-  //   // Phone Numbers
-  //   setValue("phone.cellPhone", "123-456-7890");
-  //   setValue("phone.workPhone", "987-654-3210");
+    // Phone Numbers
+    setValue("phone.cellPhone", "123-456-7890");
+    setValue("phone.workPhone", "987-654-3210");
 
-  //   // Work Authorization
-  //   setValue("workAuthorization.visaType", "H1B");
-  //   setValue("workAuthorization.startDate", "2023-01-01");
-  //   setValue("workAuthorization.endDate", "2025-12-31");
+    // Work Authorization
+    setValue("workAuthorization.visaType", "H1B");
+    setValue("workAuthorization.startDate", "2023-01-01");
+    setValue("workAuthorization.endDate", "2025-12-31");
 
-  //   // References
-  //   setValue("references", [
-  //     {
-  //       firstName: "Jane",
-  //       lastName: "Doe",
-  //       middleName: "Ann",
-  //       phone: "234-567-8901",
-  //       email: "jane.doe@example.com",
-  //       relationship: "Colleague",
-  //     },
-  //     {
-  //       firstName: "Mark",
-  //       lastName: "Smith",
-  //       middleName: "Anthony",
-  //       phone: "345-678-9012",
-  //       email: "mark.smith@example.com",
-  //       relationship: "Manager",
-  //     },
-  //   ]);
+    // References
+    setValue("references", [
+      {
+        firstName: "Jane",
+        lastName: "Doe",
+        middleName: "Ann",
+        phone: "234-567-8901",
+        email: "jane.doe@example.com",
+        relationship: "Colleague",
+      },
+      {
+        firstName: "Mark",
+        lastName: "Smith",
+        middleName: "Anthony",
+        phone: "345-678-9012",
+        email: "mark.smith@example.com",
+        relationship: "Manager",
+      },
+    ]);
 
-  //   // Documents
-  //   setValue("documents", [
-  //     {
-  //       fileName: "Resume.pdf",
-  //       fileUrl: "http://example.com/resume.pdf",
-  //     },
-  //     {
-  //       fileName: "CoverLetter.pdf",
-  //       fileUrl: "http://example.com/coverletter.pdf",
-  //     },
-  //   ]);
+    // Documents
+    setValue("documents", [
+      {
+        fileName: "Resume.pdf",
+        fileUrl: "http://example.com/resume.pdf",
+      },
+      {
+        fileName: "CoverLetter.pdf",
+        fileUrl: "http://example.com/coverletter.pdf",
+      },
+    ]);
 
-  //   // Emergency Contacts
-  //   setValue("emergencyContacts", [
-  //     {
-  //       firstName: "Emily",
-  //       lastName: "Johnson",
-  //       middleName: "Sarah",
-  //       phone: "456-789-0123",
-  //       email: "emily.johnson@example.com",
-  //       relationship: "Spouse",
-  //     },
-  //     {
-  //       firstName: "Robert",
-  //       lastName: "Williams",
-  //       middleName: "Lee",
-  //       phone: "567-890-1234",
-  //       email: "robert.williams@example.com",
-  //       relationship: "Friend",
-  //     },
-  //   ]);
-  // }, [setValue]);
+    // Emergency Contacts
+    setValue("emergencyContacts", [
+      {
+        firstName: "Emily",
+        lastName: "Johnson",
+        middleName: "Sarah",
+        phone: "456-789-0123",
+        email: "emily.johnson@example.com",
+        relationship: "Spouse",
+      },
+      {
+        firstName: "Robert",
+        lastName: "Williams",
+        middleName: "Lee",
+        phone: "567-890-1234",
+        email: "robert.williams@example.com",
+        relationship: "Friend",
+      },
+    ]);
+  }, [setValue]);
 
   const identityValue = watch("identity");
   const {
