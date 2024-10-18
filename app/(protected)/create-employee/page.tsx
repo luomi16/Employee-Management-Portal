@@ -13,49 +13,94 @@ import { employeeFormSchema } from "@/lib/validation/employeeValidation";
 // GraphQL Mutation for creating an employee
 const CREATE_EMPLOYEE_MUTATION = gql`
   mutation CreateEmployee(
-    $userId: String!
-    $email: String!
-    $firstName: String!
-    $lastName: String!
+    $firstName: String
+    $lastName: String
     $middleName: String
     $prefferedName: String
-    $profilePic: String
-    $address: AddressInput
+    $email: String
+    $ssn: String
     $phone: String
-    $ssn: String!
-    $birthday: DateTime!
-    $gender: Gender!
-    $identity: Identity!
+    $birthday: String
+    $gender: Gender
+    $identity: Identity
+    $userId: String
+    $address: AddressInput
+    $references: [ReferenceInput]
     $workAuthorization: WorkAuthorizationInput
-    $emergencyContacts: [EmergencyContactInput!]
-    $reference: [ReferenceInput!]
-    $onboardingStatus: OnboardingStatus!
-    $documents: [DocumentInput!]
+    $documents: [DocumentInput]
+    $emergencyContacts: [EmergencyContactInput]
   ) {
     createEmployee(
-      userId: $userId
-      email: $email
       firstName: $firstName
       lastName: $lastName
       middleName: $middleName
       prefferedName: $prefferedName
-      profilePic: $profilePic
-      address: $address
-      phone: $phone
+      email: $email
       ssn: $ssn
+      phone: $phone
       birthday: $birthday
       gender: $gender
       identity: $identity
+      userId: $userId
+      address: $address
+      references: $references
       workAuthorization: $workAuthorization
-      emergencyContacts: $emergencyContacts
-      reference: $reference
-      onboardingStatus: $onboardingStatus
       documents: $documents
+      emergencyContacts: $emergencyContacts
     ) {
       id
-      email
+      userId
       firstName
       lastName
+      middleName
+      prefferedName
+      email
+      ssn
+      birthday
+      phone
+      gender
+      identity
+      address {
+        id
+        streetName
+        city
+        state
+        zip
+      }
+      workAuthorization {
+        id
+        visaType
+        startDate
+        endDate
+      }
+      emergencyContacts {
+        id
+        firstName
+        lastName
+        middleName
+        phone
+        email
+        relationship
+      }
+      references {
+        id
+        firstName
+        lastName
+        middleName
+        phone
+        email
+        relationship
+      }
+      documents {
+        id
+        fileName
+        fileUrl
+        status
+        documentType
+        feedback
+      }
+      createdAt
+      updatedAt
       onboardingStatus
     }
   }
@@ -77,14 +122,15 @@ const CreateEmployeePage = () => {
     formState: { errors },
     watch,
     setValue,
-  } = useForm({ resolver: zodResolver(employeeFormSchema) });
-  // Hardcode 虚拟数据
+  } = useForm();
+  // { resolver: zodResolver(employeeFormSchema) }
+  // Hardcode
   useEffect(() => {
     // Employee basic info
     setValue("firstName", "John");
     setValue("lastName", "Doe");
     setValue("middleName", "Michael");
-    setValue("preferredName", "Johnny");
+    setValue("prefferedName", "Johnny");
     setValue("email", "john.doe@example.com");
     setValue("ssn", "123-45-6789");
     setValue("birthday", "1990-01-01");
@@ -187,35 +233,39 @@ const CreateEmployeePage = () => {
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
-    console.log("表单提交", data);
+    console.log("form submission", data);
     try {
       const variables = {
         ...data,
         userId: user?.id,
         birthday: new Date(data.birthday).toISOString(),
         onboardingStatus: "PENDING",
-        reference: data.reference?.length > 0 ? data.reference : [],
-        emergencyContacts: data.emergencyContacts?.length > 0 ? data.emergencyContacts : [],
+        references: data.references?.length > 0 ? data.references : [],
+        emergencyContacts:
+          data.emergencyContacts?.length > 0 ? data.emergencyContacts : [],
         documents: data.documents?.length > 0 ? data.documents : [],
         workAuthorization: data.workAuthorization || null,
       };
-  
-      console.log("发送到服务器的数据", variables);
-  
+
+      console.log("variables", variables);
+
       const response = await request(
         "http://localhost:3000/api/graphql",
         CREATE_EMPLOYEE_MUTATION,
         variables
       );
-      console.log("服务器响应", response);
+      console.log("server response", response);
       // Reset the form after successful submission
       reset();
       // Redirect or show success message
-      alert("员工创建成功！");
+      alert("Employee created successfully!");
       router.push("/");
     } catch (error) {
-      console.error("创建员工时出错", error);
-      alert("创建员工时出错：" + (error instanceof Error ? error.message : String(error)));
+      console.error("Error creating employee", error);
+      alert(
+        "Error creating employee: " +
+          (error instanceof Error ? error.message : String(error))
+      );
     }
   };
 
@@ -971,7 +1021,7 @@ const CreateEmployeePage = () => {
         <div className="mt-6">
           <button
             type="submit"
-            onClick={handleSubmit(onSubmit)}
+            // onClick={handleSubmit(onSubmit)}
             className="bg-green-500 text-white p-2 rounded"
           >
             Create Employee
