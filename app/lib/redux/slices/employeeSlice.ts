@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { gql } from "@apollo/client";
 import client from "../../apolloClient"; // Apollo Client for querying
+import { ApolloError } from "@apollo/client";
 
 // GraphQL query for getting employeeId by UserId
 const GET_ID_BY_USERID = gql`
@@ -32,17 +33,12 @@ const GET_EMPLOYEE_BY_ID = gql`
       email
       address {
         id
-        building
         streetName
         city
         state
         zip
       }
-      phone {
-        id
-        cellPhone
-        workPhone
-      }
+      phone
       reference {
         id
         firstName
@@ -91,10 +87,7 @@ const GET_ALL_EMPLOYEES = gql`
       firstName
       lastName
       middleName
-      phone {
-        cellPhone
-        workPhone
-      }
+      phone
       identity
       workAuthorization {
         visaType
@@ -130,10 +123,18 @@ export const fetchEmployeeIdByUserId = createAsyncThunk(
         query: GET_ID_BY_USERID,
         variables: { userId },
       });
+      
+      if (!data.employeeByUserId) {
+        return null;
+      }
+      
       console.log(data.employeeByUserId.id);
       return data.employeeByUserId.id;
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+      return thunkAPI.rejectWithValue('发生未知错误');
     }
   }
 );
@@ -146,9 +147,17 @@ export const fetchAllEmployees = createAsyncThunk(
       const { data } = await client.query({
         query: GET_ALL_EMPLOYEES,
       });
-      return data.employees; // Return employees array
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message);
+      if (!data || !data.employees) {
+        throw new Error("No employees data received");
+      }
+      return data.employees;
+    } catch (error: unknown) {
+      console.error("Error fetching employees:", error);
+      if (error instanceof ApolloError) {
+        console.error("GraphQL Error:", error.graphQLErrors);
+        console.error("Network Error:", error.networkError);
+      }
+      return thunkAPI.rejectWithValue(error instanceof Error ? error.message : String(error));
     }
   }
 );

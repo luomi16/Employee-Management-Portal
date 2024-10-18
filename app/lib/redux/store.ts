@@ -3,11 +3,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import employeeReducer from "./slices/employeeSlice";
 import userReducer from "./slices/userSlice";
+import documentReducer from "./slices/documentSlice";
 
 export const store = configureStore({
   reducer: {
     employee: employeeReducer,
     user: userReducer,
+    document: documentReducer
   },
 });
 
