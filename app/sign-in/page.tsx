@@ -45,7 +45,7 @@ export default function SignInPage() {
       if (res.data) {
         // console.log(res.data);
         dispatch(setUser(res.data));
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch (err) {
       console.log(typeof err);
