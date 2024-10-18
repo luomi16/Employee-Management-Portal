@@ -9,7 +9,8 @@ import {
   list,
 } from "nexus";
 import path from "path";
-import { UserResolvers } from "./resolvers"; // Import resolvers
+import { UserResolvers } from "./resolvers/userResolvers"; // Import resolvers
+import { EmployeeResolvers } from "./resolvers/employeeResolvers"; // Import resolvers
 
 // Define the User type
 const User = objectType({
@@ -37,13 +38,15 @@ const Employee = objectType({
     t.string("email");
     t.string("ssn");
     t.string("birthday");
+    t.string("phone");
     t.field("gender", { type: "Gender" });
     t.field("identity", { type: "Identity" });
-    t.list.field("address", { type: Address });
-    t.list.field("phone", { type: PhoneNumber });
+    // t.list.field("address", { type: Address });
+    t.field("address", { type: Address });
     t.field("workAuthorization", { type: WorkAuthorization });
     t.list.field("emergencyContacts", { type: EmergencyContact });
-    t.field("reference", { type: Reference });
+    // t.field("reference", { type: Reference });
+    t.list.field("reference", { type: Reference });
     t.list.field("documents", { type: Document });
     t.field("createdAt", { type: "String" });
     t.field("updatedAt", { type: "String" });
@@ -56,21 +59,10 @@ const Address = objectType({
   name: "Address",
   definition(t) {
     t.string("id");
-    t.string("building");
     t.string("streetName");
     t.string("city");
     t.string("state");
     t.string("zip");
-  },
-});
-
-// Define PhoneNumber type
-const PhoneNumber = objectType({
-  name: "PhoneNumber",
-  definition(t) {
-    t.string("id");
-    t.string("cellPhone");
-    t.string("workPhone");
   },
 });
 
@@ -183,25 +175,25 @@ const Query = objectType({
 
     t.list.field("employees", {
       type: "Employee",
-      resolve: UserResolvers.Query.employees, // Resolver for fetching all employees
+      resolve: EmployeeResolvers.Query.employees, // Resolver for fetching all employees
     });
 
     t.field("employeeById", {
       type: "Employee",
       args: { id: stringArg() },
-      resolve: UserResolvers.Query.employeeById, // Resolver for fetching an employee by ID
+      resolve: EmployeeResolvers.Query.employeeById, // Resolver for fetching an employee by ID
     });
 
     t.field("employeeByUserId", {
       type: "Employee",
       args: { userId: stringArg() },
-      resolve: UserResolvers.Query.employeeByUserId, // Resolver for fetching an employee by UserID
+      resolve: EmployeeResolvers.Query.employeeByUserId, // Resolver for fetching an employee by UserID
     });
 
     t.list.field("employeeDocuments", {
       type: "Document",
       args: { employeeId: stringArg() },
-      resolve: UserResolvers.Query.employeeDocuments, // Resolver for fetching documents of an employee
+      resolve: EmployeeResolvers.Query.employeeDocuments, // Resolver for fetching documents of an employee
     });
 
     t.list.field("registrationTokenHistory", {
@@ -245,23 +237,19 @@ const Mutation = objectType({
         prefferedName: stringArg(),
         email: stringArg(),
         ssn: stringArg(),
+        phone: stringArg(),
         birthday: stringArg(),
         gender: arg({ type: "Gender" }), // Use the Gender enum as an argument
         identity: arg({ type: "Identity" }), // Use the Identity enum as an argument
         userId: stringArg(), // Make sure this is defined
-        address: list(
-          arg({
-            type: "AddressInput", // Assuming you define the input type below
-          })
-        ),
-        phone: list(
-          arg({
-            type: "PhoneNumberInput", // Assuming you define the input type below
-          })
-        ),
-        reference: arg({
-          type: "ReferenceInput", // Assuming you define the input type below
+        address: arg({
+          type: "AddressInput", // Assuming you define the input type below
         }),
+        reference: list(
+          arg({
+            type: "ReferenceInput", // Assuming you define the input type below
+          })
+        ),
         workAuthorization: arg({
           type: "WorkAuthorizationInput", // Assuming you define the input type below
         }),
@@ -276,7 +264,7 @@ const Mutation = objectType({
           })
         ),
       },
-      resolve: UserResolvers.Mutation.createEmployee, // Resolver for creating an employee
+      resolve: EmployeeResolvers.Mutation.createEmployee, // Resolver for creating an employee
     });
 
     t.field("updateEmployee", {
@@ -285,7 +273,7 @@ const Mutation = objectType({
         id: stringArg(),
         data: stringArg(), // Accepting JSON-like data for updates
       },
-      resolve: UserResolvers.Mutation.updateEmployee, // Resolver for updating an employee
+      resolve: EmployeeResolvers.Mutation.updateEmployee, // Resolver for updating an employee
     });
 
     t.field("addWorkAuthorization", {
@@ -296,7 +284,7 @@ const Mutation = objectType({
         startDate: stringArg(),
         endDate: stringArg(),
       },
-      resolve: UserResolvers.Mutation.addWorkAuthorization, // Resolver for adding work authorization
+      resolve: EmployeeResolvers.Mutation.addWorkAuthorization, // Resolver for adding work authorization
     });
 
     t.field("uploadDocument", {
@@ -307,7 +295,7 @@ const Mutation = objectType({
         fileUrl: stringArg(),
         documentType: stringArg(), 
       },
-      resolve: UserResolvers.Mutation.uploadDocument, // Resolver for uploading a document
+      resolve: EmployeeResolvers.Mutation.uploadDocument, // Resolver for uploading a document
     });
 
     t.field("sendRegistrationToken", {
@@ -325,20 +313,10 @@ const Mutation = objectType({
 const AddressInput = inputObjectType({
   name: "AddressInput",
   definition(t) {
-    t.string("building");
     t.string("streetName");
     t.string("city");
     t.string("state");
     t.string("zip");
-  },
-});
-
-// Define PhoneNumberInput type
-const PhoneNumberInput = inputObjectType({
-  name: "PhoneNumberInput",
-  definition(t) {
-    t.string("cellPhone");
-    t.string("workPhone");
   },
 });
 
@@ -393,7 +371,6 @@ export const schema = makeSchema({
     User,
     Employee,
     Address,
-    PhoneNumber,
     WorkAuthorization,
     Document,
     EmergencyContact,
@@ -402,7 +379,6 @@ export const schema = makeSchema({
     Gender,
     Identity,
     AddressInput,
-    PhoneNumberInput,
     ReferenceInput,
     WorkAuthorizationInput,
     DocumentInput,

@@ -8,11 +8,6 @@ export interface Address {
   zip: string;
 }
 
-export interface Phone {
-  cellPhone: string;
-  workPhone: string;
-}
-
 export interface Reference {
   firstName: string;
   lastName: string;
@@ -52,7 +47,7 @@ export interface Employee {
   identity: string;
   email: string;
   address?: Address[];
-  phone?: Phone[];
+  phone?: string;
   reference?: Reference;
   workAuthorization?: WorkAuthorization;
   documents?: Document[];
