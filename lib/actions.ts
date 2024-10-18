@@ -20,10 +20,9 @@ export const signInAction = async (signInValues: SignInValues) => {
     // get user data
     const user = await prisma.user.findUnique({
       where: { email: signInValues.email },
-      select: { id: true, email: true, username: true },
+      select: { id: true, email: true, username: true, role: true },
     });
     return { data: user };
-
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {

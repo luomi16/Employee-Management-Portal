@@ -17,10 +17,7 @@ export default async function Header() {
         {/* Use justify-between for alignment */}
         <div className="flex items-center space-x-6">
           {" "}
-          {/* Group navigation items */}
-          <Link href="/" className="text-white hover:underline">
-            Home
-          </Link>
+
         </div>
         <div className="flex items-center space-x-6">
           {" "}

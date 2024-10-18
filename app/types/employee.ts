@@ -52,3 +52,13 @@ export interface Employee {
   documents?: Document[];
   emergencyContacts?: EmergencyContact[];
 }
+
+// Define the User interface
+interface User {
+  id: string; // ObjectId as a string
+  username: string;
+  email: string; // Must be unique
+  password: string; // Consider security practices regarding exposing this
+  image?: string; // Optional property for the user's image
+  role: string; // The role property, using the Role enum
+}

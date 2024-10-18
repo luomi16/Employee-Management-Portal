@@ -133,12 +133,7 @@ export default function SignUpPage() {
               <SubmitButton pendingText="Creating account...">
                 Create Account
               </SubmitButton>
-              <Link
-                className="text-gray-400 hover:underline mt-4"
-                href="/sign-in"
-              >
-                Already have an account? Sign In
-              </Link>
+
             </Form>
           )}
         </Formik>
