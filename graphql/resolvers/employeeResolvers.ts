@@ -1,4 +1,4 @@
-import { PrismaClient, Gender, Identity, VisaType } from "@prisma/client";
+import { PrismaClient, Gender, Identity, VisaType, Status, DocumentType} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -232,13 +232,15 @@ export const EmployeeResolvers = {
 
     uploadDocument: async (
       _parent: any,
-      args: { employeeId: string; fileName: string; fileUrl: string }
+      args: { employeeId: string; fileName: string; fileUrl: string; documentType: DocumentType; status: Status;}
     ) => {
       return prisma.document.create({
         data: {
           employeeId: args.employeeId,
           fileName: args.fileName,
           fileUrl: args.fileUrl,
+          documentType: args.documentType,
+          status: args.status,
         },
       });
     },
