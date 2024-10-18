@@ -87,25 +87,15 @@ export default function Infotable({ employee }: InfotableProps) {
         )}
 
         {/* Phone Information */}
-        {employee.phone && employee.phone.length > 0 && (
+        {employee.phone && (
           <>
-            <h2 className="text-2xl font-bold mt-4">Phone</h2>
-            {employee.phone.map((ph, index) => (
-              <div key={index}>
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-                  <dt className="font-medium text-white">Cell Phone</dt>
-                  <dd className="sm:col-span-2 text-gray-200">
-                    {ph.cellPhone}
-                  </dd>
-                </div>
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-                  <dt className="font-medium text-white">Work Phone</dt>
-                  <dd className="sm:col-span-2 text-gray-200">
-                    {ph.workPhone}
-                  </dd>
-                </div>
-              </div>
-            ))}
+            <h2 className="text-2xl font-bold mt-4">电话</h2>
+            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+              <dt className="font-medium text-white">电话号码</dt>
+              <dd className="sm:col-span-2 text-gray-200">
+                {employee.phone}
+              </dd>
+            </div>
           </>
         )}
 

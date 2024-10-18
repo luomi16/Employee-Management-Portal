@@ -33,17 +33,12 @@ const GET_EMPLOYEE_BY_ID = gql`
       email
       address {
         id
-        building
         streetName
         city
         state
         zip
       }
-      phone {
-        id
-        cellPhone
-        workPhone
-      }
+      phone
       reference {
         id
         firstName
