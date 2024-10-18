@@ -1,7 +1,6 @@
 // /app/types/employee.ts
 
 export interface Address {
-  building: string;
   streetName: string;
   city: string;
   state: string;
@@ -46,9 +45,9 @@ export interface Employee {
   gender: string;
   identity: string;
   email: string;
-  address?: Address[];
+  address?: Address;
   phone?: string;
-  reference?: Reference;
+  reference?: Reference[];
   workAuthorization?: WorkAuthorization;
   documents?: Document[];
   emergencyContacts?: EmergencyContact[];

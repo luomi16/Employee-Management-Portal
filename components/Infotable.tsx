@@ -51,38 +51,28 @@ export default function Infotable({ employee }: InfotableProps) {
           <dd className="sm:col-span-2 text-gray-200">{employee.identity}</dd>
         </div>
 
-        {/* address info */}
-        {employee.address && employee.address.length > 0 && (
+        {/* Address Information */}
+        {employee.address && (
           <>
             <h2 className="text-2xl font-bold mt-4">Address</h2>
-            {employee.address.map((addr, index) => (
-              <div key={index}>
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-                  <dt className="font-medium text-white">Building</dt>
-                  <dd className="sm:col-span-2 text-gray-200">
-                    {addr.building}
-                  </dd>
-                </div>
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-                  <dt className="font-medium text-white">Street Name</dt>
-                  <dd className="sm:col-span-2 text-gray-200">
-                    {addr.streetName}
-                  </dd>
-                </div>
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-                  <dt className="font-medium text-white">City</dt>
-                  <dd className="sm:col-span-2 text-gray-200">{addr.city}</dd>
-                </div>
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-                  <dt className="font-medium text-white">State</dt>
-                  <dd className="sm:col-span-2 text-gray-200">{addr.state}</dd>
-                </div>
-                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-                  <dt className="font-medium text-white">Zip</dt>
-                  <dd className="sm:col-span-2 text-gray-200">{addr.zip}</dd>
-                </div>
-              </div>
-            ))}
+            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+              <dt className="font-medium text-white">Street Name</dt>
+              <dd className="sm:col-span-2 text-gray-200">
+                {employee.address.streetName}
+              </dd>
+            </div>
+            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+              <dt className="font-medium text-white">City</dt>
+              <dd className="sm:col-span-2 text-gray-200">{employee.address.city}</dd>
+            </div>
+            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+              <dt className="font-medium text-white">State</dt>
+              <dd className="sm:col-span-2 text-gray-200">{employee.address.state}</dd>
+            </div>
+            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+              <dt className="font-medium text-white">Zip</dt>
+              <dd className="sm:col-span-2 text-gray-200">{employee.address.zip}</dd>
+            </div>
           </>
         )}
 
@@ -92,47 +82,40 @@ export default function Infotable({ employee }: InfotableProps) {
             <h2 className="text-2xl font-bold mt-4">电话</h2>
             <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
               <dt className="font-medium text-white">电话号码</dt>
-              <dd className="sm:col-span-2 text-gray-200">
-                {employee.phone}
-              </dd>
+              <dd className="sm:col-span-2 text-gray-200">{employee.phone}</dd>
             </div>
           </>
         )}
 
         {/* Reference Information */}
-        {employee.reference && (
+        {employee.reference && employee.reference.length > 0 && (
           <>
-            <h2 className="text-2xl font-bold mt-4">Reference</h2>
-            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-              <dt className="font-medium text-white">First Name</dt>
-              <dd className="sm:col-span-2 text-gray-200">
-                {employee.reference.firstName}
-              </dd>
-            </div>
-            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-              <dt className="font-medium text-white">Last Name</dt>
-              <dd className="sm:col-span-2 text-gray-200">
-                {employee.reference.lastName}
-              </dd>
-            </div>
-            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-              <dt className="font-medium text-white">Phone</dt>
-              <dd className="sm:col-span-2 text-gray-200">
-                {employee.reference.phone}
-              </dd>
-            </div>
-            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-              <dt className="font-medium text-white">Email</dt>
-              <dd className="sm:col-span-2 text-gray-200">
-                {employee.reference.email}
-              </dd>
-            </div>
-            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-              <dt className="font-medium text-white">Relationship</dt>
-              <dd className="sm:col-span-2 text-gray-200">
-                {employee.reference.relationship}
-              </dd>
-            </div>
+            <h2 className="text-2xl font-bold mt-4">References</h2>
+            {employee.reference.map((ref, index) => (
+              <div key={index}>
+                <h3 className="text-xl font-semibold mt-2">Reference {index + 1}</h3>
+                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+                  <dt className="font-medium text-white">First Name</dt>
+                  <dd className="sm:col-span-2 text-gray-200">{ref.firstName}</dd>
+                </div>
+                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+                  <dt className="font-medium text-white">Last Name</dt>
+                  <dd className="sm:col-span-2 text-gray-200">{ref.lastName}</dd>
+                </div>
+                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+                  <dt className="font-medium text-white">Phone</dt>
+                  <dd className="sm:col-span-2 text-gray-200">{ref.phone}</dd>
+                </div>
+                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+                  <dt className="font-medium text-white">Email</dt>
+                  <dd className="sm:col-span-2 text-gray-200">{ref.email}</dd>
+                </div>
+                <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+                  <dt className="font-medium text-white">Relationship</dt>
+                  <dd className="sm:col-span-2 text-gray-200">{ref.relationship}</dd>
+                </div>
+              </div>
+            ))}
           </>
         )}
 

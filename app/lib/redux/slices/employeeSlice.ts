@@ -123,10 +123,18 @@ export const fetchEmployeeIdByUserId = createAsyncThunk(
         query: GET_ID_BY_USERID,
         variables: { userId },
       });
+      
+      if (!data.employeeByUserId) {
+        return null;
+      }
+      
       console.log(data.employeeByUserId.id);
       return data.employeeByUserId.id;
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+      return thunkAPI.rejectWithValue('发生未知错误');
     }
   }
 );
