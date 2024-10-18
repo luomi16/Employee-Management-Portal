@@ -97,6 +97,9 @@ const GET_ALL_EMPLOYEES = gql`
   }
 `;
 
+// GraphQL for updating employee info
+// const UPDATE_EMPLOYEE = gql``;
+
 // Async thunk to fetch employee data by ID
 export const fetchEmployeeById = createAsyncThunk(
   "employee/fetchEmployeeById",
@@ -123,18 +126,18 @@ export const fetchEmployeeIdByUserId = createAsyncThunk(
         query: GET_ID_BY_USERID,
         variables: { userId },
       });
-      
+
       if (!data.employeeByUserId) {
         return null;
       }
-      
+
       console.log(data.employeeByUserId.id);
       return data.employeeByUserId.id;
     } catch (error: unknown) {
       if (error instanceof Error) {
         return thunkAPI.rejectWithValue(error.message);
       }
-      return thunkAPI.rejectWithValue('发生未知错误');
+      return thunkAPI.rejectWithValue("UnkownError");
     }
   }
 );
@@ -157,7 +160,9 @@ export const fetchAllEmployees = createAsyncThunk(
         console.error("GraphQL Error:", error.graphQLErrors);
         console.error("Network Error:", error.networkError);
       }
-      return thunkAPI.rejectWithValue(error instanceof Error ? error.message : String(error));
+      return thunkAPI.rejectWithValue(
+        error instanceof Error ? error.message : String(error)
+      );
     }
   }
 );

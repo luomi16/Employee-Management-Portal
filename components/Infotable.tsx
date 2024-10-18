@@ -33,7 +33,11 @@ export default function Infotable({ employee }: InfotableProps) {
 
         <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
           <dt className="font-medium text-white">Birthday</dt>
-          <dd className="sm:col-span-2 text-gray-200">{employee.birthday}</dd>
+          <dd className="sm:col-span-2 text-gray-200">
+            {new Date(parseInt(employee.birthday, 10)).toLocaleDateString(
+              "en-CA"
+            )}{" "}
+          </dd>
         </div>
 
         <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
@@ -47,9 +51,22 @@ export default function Infotable({ employee }: InfotableProps) {
         </div>
 
         <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+          <dt className="font-medium text-white">Phone</dt>
+          <dd className="sm:col-span-2 text-gray-200">{employee.phone}</dd>
+        </div>
+
+        <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
           <dt className="font-medium text-white">Identity</dt>
           <dd className="sm:col-span-2 text-gray-200">{employee.identity}</dd>
         </div>
+
+        {/* Phone Information */}
+        {employee.phone && (
+          <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
+            <dt className="font-medium text-white">Phone</dt>
+            <dd className="sm:col-span-2 text-gray-200">{employee.phone}</dd>
+          </div>
+        )}
 
         {/* Address Information */}
         {employee.address && (
@@ -63,26 +80,21 @@ export default function Infotable({ employee }: InfotableProps) {
             </div>
             <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
               <dt className="font-medium text-white">City</dt>
-              <dd className="sm:col-span-2 text-gray-200">{employee.address.city}</dd>
+              <dd className="sm:col-span-2 text-gray-200">
+                {employee.address.city}
+              </dd>
             </div>
             <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
               <dt className="font-medium text-white">State</dt>
-              <dd className="sm:col-span-2 text-gray-200">{employee.address.state}</dd>
+              <dd className="sm:col-span-2 text-gray-200">
+                {employee.address.state}
+              </dd>
             </div>
             <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
               <dt className="font-medium text-white">Zip</dt>
-              <dd className="sm:col-span-2 text-gray-200">{employee.address.zip}</dd>
-            </div>
-          </>
-        )}
-
-        {/* Phone Information */}
-        {employee.phone && (
-          <>
-            <h2 className="text-2xl font-bold mt-4">电话</h2>
-            <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
-              <dt className="font-medium text-white">电话号码</dt>
-              <dd className="sm:col-span-2 text-gray-200">{employee.phone}</dd>
+              <dd className="sm:col-span-2 text-gray-200">
+                {employee.address.zip}
+              </dd>
             </div>
           </>
         )}
@@ -93,14 +105,20 @@ export default function Infotable({ employee }: InfotableProps) {
             <h2 className="text-2xl font-bold mt-4">References</h2>
             {employee.reference.map((ref, index) => (
               <div key={index}>
-                <h3 className="text-xl font-semibold mt-2">Reference {index + 1}</h3>
+                <h3 className="text-xl font-semibold mt-2">
+                  Reference {index + 1}
+                </h3>
                 <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
                   <dt className="font-medium text-white">First Name</dt>
-                  <dd className="sm:col-span-2 text-gray-200">{ref.firstName}</dd>
+                  <dd className="sm:col-span-2 text-gray-200">
+                    {ref.firstName}
+                  </dd>
                 </div>
                 <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
                   <dt className="font-medium text-white">Last Name</dt>
-                  <dd className="sm:col-span-2 text-gray-200">{ref.lastName}</dd>
+                  <dd className="sm:col-span-2 text-gray-200">
+                    {ref.lastName}
+                  </dd>
                 </div>
                 <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
                   <dt className="font-medium text-white">Phone</dt>
@@ -112,7 +130,9 @@ export default function Infotable({ employee }: InfotableProps) {
                 </div>
                 <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
                   <dt className="font-medium text-white">Relationship</dt>
-                  <dd className="sm:col-span-2 text-gray-200">{ref.relationship}</dd>
+                  <dd className="sm:col-span-2 text-gray-200">
+                    {ref.relationship}
+                  </dd>
                 </div>
               </div>
             ))}
@@ -133,14 +153,18 @@ export default function Infotable({ employee }: InfotableProps) {
             <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
               <dt className="font-medium text-white">Start Date</dt>
               <dd className="sm:col-span-2 text-gray-200">
-                {employee.workAuthorization.startDate}
+                {new Date(
+                  parseInt(employee.workAuthorization.startDate, 10)
+                ).toLocaleDateString("en-CA")}{" "}
               </dd>
             </div>
 
             <div className="grid grid-cols-1 gap-1 py-3 sm:grid-cols-3 sm:gap-4 even:bg-gray-800">
               <dt className="font-medium text-white">End Date</dt>
               <dd className="sm:col-span-2 text-gray-200">
-                {employee.workAuthorization.endDate}
+                {new Date(
+                  parseInt(employee.workAuthorization.endDate, 10)
+                ).toLocaleDateString("en-CA")}{" "}
               </dd>
             </div>
 
