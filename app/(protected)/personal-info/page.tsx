@@ -9,6 +9,7 @@ import {
 } from "../../lib/redux/slices/employeeSlice";
 import { RootState, useAppDispatch } from "../../lib/redux/store";
 import Link from "next/link";
+import ESidebar from "@/components/ESidebar";
 
 const DynamicInfotable = dynamic(() => import("@/components/Infotable"), {
   ssr: false,
@@ -43,31 +44,32 @@ const PersonalInfoPage = () => {
   if (status === "failed") return <p>Error: {error}</p>;
 
   return (
-    <section className="main-container">
-      {employee ? (
-        <DynamicInfotable employee={employee} />
-      ) : employeeId ? (
-        <p>No employee data found.</p>
-      ) : user ? (
-        <div
-          className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4"
-          role="alert"
-        >
-          <p className="font-bold">Notice</p>
-          <p>
-            You haven't created an employee profile yet. 
-          </p>
-          <Link
-            href="/create-employee"
-            className="text-yellow-700 underline hover:text-blue-400"
+    <main className="flex">
+      <ESidebar />
+      <section className="main-container ml-4 flex-1">
+        {employee ? (
+          <DynamicInfotable employee={employee} />
+        ) : employeeId ? (
+          <p>No employee data found.</p>
+        ) : user ? (
+          <div
+            className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4"
+            role="alert"
           >
-            Please create one to view your personal information.
-          </Link>
-        </div>
-      ) : (
-        <p>Loading user information...</p>
-      )}
-    </section>
+            <p className="font-bold">Notice</p>
+            <p>You haven't created an employee profile yet.</p>
+            <Link
+              href="/create-employee"
+              className="text-yellow-700 underline hover:text-blue-400"
+            >
+              Please create one to view your personal information.
+            </Link>
+          </div>
+        ) : (
+          <p>Loading user information...</p>
+        )}
+      </section>
+    </main>
   );
 };
 

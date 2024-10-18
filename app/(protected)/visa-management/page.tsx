@@ -222,12 +222,21 @@ import {
   fetchEmployeeById,
 } from "../../lib/redux/slices/employeeSlice";
 import { DocumentType } from "@prisma/client";
+import ESidebar from "@/components/ESidebar";
 
 const VisaManagementPage = () => {
   const dispatch = useAppDispatch();
   const user = useSelector((state: RootState) => state.user.user);
-  const { documents, loading: documentLoading, error: documentError } = useSelector((state: RootState) => state.document);
-  const { employeeId, status: employeeStatus, error: employeeError } = useSelector((state: RootState) => state.employee);
+  const {
+    documents,
+    loading: documentLoading,
+    error: documentError,
+  } = useSelector((state: RootState) => state.document);
+  const {
+    employeeId,
+    status: employeeStatus,
+    error: employeeError,
+  } = useSelector((state: RootState) => state.employee);
 
   // Fetch employeeId when user is available and employeeId is not yet loaded
   useEffect(() => {
@@ -251,9 +260,12 @@ const VisaManagementPage = () => {
       case "PENDING":
         return `Waiting for HR to approve your ${getDisplayName(docType)}`;
       case "APPROVED":
-        if (docType === "OPT_RECEIPT") return "Please upload a copy of your OPT EAD.";
-        if (docType === "OPT_EAD") return "Please download and fill out the I-983 form.";
-        if (docType === "I_983") return "Please send the I-983 along all necessary documents to your school and upload the new I-20.";
+        if (docType === "OPT_RECEIPT")
+          return "Please upload a copy of your OPT EAD.";
+        if (docType === "OPT_EAD")
+          return "Please download and fill out the I-983 form.";
+        if (docType === "I_983")
+          return "Please send the I-983 along all necessary documents to your school and upload the new I-20.";
         if (docType === "I_20") return "All documents have been approved.";
         break;
       case "REJECTED":
@@ -262,13 +274,18 @@ const VisaManagementPage = () => {
     return "";
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, docType: DocumentType) => {
+  const handleFileUpload = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    docType: DocumentType
+  ) => {
     if (event.target.files && event.target.files[0] && employeeId) {
       const file = event.target.files[0];
       const fileName = file.name;
       const fileUrl = URL.createObjectURL(file);
 
-      dispatch(uploadDocument({ employeeId, fileName, fileUrl, documentType: docType }));
+      dispatch(
+        uploadDocument({ employeeId, fileName, fileUrl, documentType: docType })
+      );
     }
   };
 
@@ -277,7 +294,9 @@ const VisaManagementPage = () => {
     const index = previousDocs.indexOf(docType);
     if (index === 0) return true;
 
-    const previousDocument = documents.find((doc) => doc.documentType === previousDocs[index - 1]);
+    const previousDocument = documents.find(
+      (doc) => doc.documentType === previousDocs[index - 1]
+    );
     return previousDocument && previousDocument.status === "APPROVED";
   };
 
@@ -296,36 +315,40 @@ const VisaManagementPage = () => {
     }
   };
 
-  if (employeeStatus === "loading") return <p>Loading employee information...</p>;
+  if (employeeStatus === "loading")
+    return <p>Loading employee information...</p>;
   if (employeeError) return <p>Error: {employeeError}</p>;
 
   return (
-    <section className="main-container">
-      <h1 className="header-text text-3xl font-bold mt-4">
-        Manage Your OPT Documents
-      </h1>
-      {["OPT_RECEIPT", "OPT_EAD", "I_983", "I_20"].map((docType) => (
-        <div key={docType} className="document-section mt-4">
-          <h2 className="text-xl font-semibold">{getDisplayName(docType as DocumentType)}</h2>
-          <p className="mt-2 text-lg">{getDocumentStatusMessage(docType as DocumentType)}</p>
-          {canUploadDocument(docType as DocumentType) && (
-            <div className="upload-file-container mt-2">
-              <input
-                type="file"
-                onChange={(e) => handleFileUpload(e, docType as DocumentType)}
-                disabled={documentLoading}
-              />
-            </div>
-          )}
-        </div>
-      ))}
-      {documentError && <p className="text-red-500 mt-4">{documentError}</p>}
-    </section>
+    <main className="flex">
+      <ESidebar />
+      <section className="main-container ml-4">
+        <h1 className="header-text text-3xl font-bold mt-4">
+          Manage Your OPT Documents
+        </h1>
+        {["OPT_RECEIPT", "OPT_EAD", "I_983", "I_20"].map((docType) => (
+          <div key={docType} className="document-section mt-4">
+            <h2 className="text-xl font-semibold">
+              {getDisplayName(docType as DocumentType)}
+            </h2>
+            <p className="mt-2 text-lg">
+              {getDocumentStatusMessage(docType as DocumentType)}
+            </p>
+            {canUploadDocument(docType as DocumentType) && (
+              <div className="upload-file-container mt-2">
+                <input
+                  type="file"
+                  onChange={(e) => handleFileUpload(e, docType as DocumentType)}
+                  disabled={documentLoading}
+                />
+              </div>
+            )}
+          </div>
+        ))}
+        {documentError && <p className="text-red-500 mt-4">{documentError}</p>}
+      </section>
+    </main>
   );
 };
 
 export default VisaManagementPage;
-
-
-
-

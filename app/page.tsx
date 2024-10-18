@@ -13,20 +13,16 @@ export default async function Home() {
       {session?.user ? (
         <>
           <p className="mt-4 text-lg">Current User: {session?.user?.email}</p>
-          <Link href="/create-employee" className="text-white underline hover:text-blue-400"> Fill your employee form now!</Link>
+          <Link
+            href="/create-employee"
+            className="text-white underline hover:text-blue-400"
+          >
+            {" "}
+            Fill your employee form now!
+          </Link>
         </>
       ) : (
         <div>
-          <p className="mt-4 text-lg">
-            If you don't have an account, please{" "}
-            <Link
-              href="/sign-up"
-              className="text-white underline hover:text-blue-400"
-            >
-              sign up
-            </Link>
-            .
-          </p>
           <p className="mt-4 text-lg">
             If you have an account, please{" "}
             <Link
