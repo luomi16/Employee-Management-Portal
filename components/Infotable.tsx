@@ -92,10 +92,10 @@ export default function Infotable({ employee }: InfotableProps) {
         )}
 
         {/* Reference Information */}
-        {employee.reference && employee.reference.length > 0 && (
+        {employee.references && employee.references.length > 0 && (
           <>
             <h2 className="text-2xl font-bold mt-4">References</h2>
-            {employee.reference.map((ref, index) => (
+            {employee.references.map((ref, index) => (
               <div key={index}>
                 <h3 className="text-xl font-semibold mt-2">
                   Reference {index + 1}

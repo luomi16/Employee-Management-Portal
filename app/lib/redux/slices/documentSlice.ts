@@ -19,6 +19,35 @@ const UPLOAD_DOCUMENT = gql`
 `;
 
 
+const GET_DOCUMENTS = gql`
+  query GetDocuments($employeeId: String!) {
+    employeeDocuments(employeeId: $employeeId) {
+      id
+      fileName
+      fileUrl
+      documentType
+      status
+      feedback
+    }
+  }
+`;
+
+// Async thunk to fetch documents
+export const fetchDocuments = createAsyncThunk<
+  Document[],
+  string
+>("document/fetchDocuments", async (employeeId, thunkAPI) => {
+  try {
+    const { data } = await client.query({
+      query: GET_DOCUMENTS,
+      variables: { employeeId },
+    });
+    return data.employeeDocuments;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.message);
+  }
+});
+
 export const uploadDocument = createAsyncThunk<
   Document,
   { employeeId: string; fileName: string; fileUrl: string; documentType: DocumentType }
@@ -70,6 +99,52 @@ const initialState: DocumentState = {
   error: null
 };
 
+const documentSlice = createSlice({
+  name: "document",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(uploadDocument.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadDocument.fulfilled, (state, action: PayloadAction<Document>) => {
+        state.loading = false;
+        const index = state.documents.findIndex(
+          (doc) => doc.documentType === action.payload.documentType
+        );
+        if (index !== -1) {
+          // Update the existing document
+          state.documents[index] = { ...action.payload }; 
+        } else {
+          // Add a new document
+          state.documents.push({ ...action.payload }); 
+        }
+      })
+      .addCase(uploadDocument.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchDocuments.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchDocuments.fulfilled, (state, action: PayloadAction<Document[]>) => {
+        state.loading = false;
+        state.documents = action.payload;
+      })
+      .addCase(fetchDocuments.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+  },
+});
+
+
+
+export default documentSlice.reducer;
+
 // const documentSlice = createSlice({
 //   name: "document",
 //   initialState,
@@ -97,36 +172,3 @@ const initialState: DocumentState = {
 //   },
 // });
 
-const documentSlice = createSlice({
-  name: "document",
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(uploadDocument.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(uploadDocument.fulfilled, (state, action: PayloadAction<Document>) => {
-        state.loading = false;
-        const index = state.documents.findIndex(
-          (doc) => doc.documentType === action.payload.documentType
-        );
-        if (index !== -1) {
-          // Update the existing document
-          state.documents[index] = { ...action.payload }; 
-        } else {
-          // Add a new document
-          state.documents.push({ ...action.payload }); 
-        }
-      })
-      .addCase(uploadDocument.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      });
-  },
-});
-
-
-
-export default documentSlice.reducer;

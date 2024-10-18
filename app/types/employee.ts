@@ -47,7 +47,7 @@ export interface Employee {
   email: string;
   address?: Address;
   phone?: string;
-  reference?: Reference[];
+  references?: Reference[];
   workAuthorization?: WorkAuthorization;
   documents?: Document[];
   emergencyContacts?: EmergencyContact[];

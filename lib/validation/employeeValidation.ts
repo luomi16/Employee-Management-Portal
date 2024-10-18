@@ -1,3 +1,5 @@
+// employeeValidation.ts
+
 import { z } from "zod";
 const eighteenYearsAgo = new Date();
 eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
@@ -37,7 +39,7 @@ today.setHours(0, 0, 0, 0);
 
 // Work Authorization Input Validation
 const workAuthorizationSchema = z.object({
-  visaType: z.enum(["H1B", "F1", "J1", "Other"]),
+  visaType: z.enum(["H1B", "F1", "J1", "OTHER"]),
   startDate: z.string()
     .min(1, "Start date is required")
     .refine((value) => {
@@ -88,14 +90,14 @@ export const employeeFormSchema = z.object({
   userId: z.string().min(1, "User ID is required"),
   address: addressSchema,
   phone: z.string().min(9, "Phone number must be at least 9 digits"),
-  reference: z
-    .array(referenceSchema)
-    .min(1, "At least one reference is required"),
+  references: z
+    .array(referenceSchema).optional(),
+    // .min(1, "At least one reference is required"),
   workAuthorization: workAuthorizationSchema,
   documents: z
-    .array(documentSchema)
-    .min(1, "At least one document is required"),
+    .array(documentSchema).optional(),
+    // .min(1, "At least one document is required"),
   emergencyContacts: z
-    .array(emergencyContactSchema)
-    .min(1, "At least one emergency contact is required"),
+    .array(emergencyContactSchema).optional(),
+    // .min(1, "At least one emergency contact is required"),
 });
