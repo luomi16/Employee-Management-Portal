@@ -47,16 +47,16 @@ const PendingApplications = () => {
         <tbody className="divide-y dark:divide-gray-700">
           {data.employees.map((employee: any) => (
             <tr key={employee.id} className="odd:bg-gray-800/50">
-              <td className="whitespace-nowrap px-4 py-2 text-gray-200">
+              <td className="whitespace-nowrap px-4 py-2 text-center text-gray-200">
                 {employee.firstName} {employee.middleName} {employee.lastName}
               </td>
-              <td className="whitespace-nowrap px-4 py-2 text-gray-200">
+              <td className="whitespace-nowrap px-4 py-2 text-center text-gray-200">
                 {employee.email}
               </td>
-              <td className="whitespace-nowrap px-4 py-2 text-gray-200">
+              <td className="whitespace-nowrap px-4 py-2 text-center text-gray-200">
                 {employee.onboardingStatus}
               </td>
-              <td className="whitespace-nowrap px-4 py-2 text-gray-200">
+              <td className="whitespace-nowrap px-4 py-2 text-center text-gray-200">
                 <Link href={`/hr/employee-info/${employee.id}`} passHref>
                   <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Review

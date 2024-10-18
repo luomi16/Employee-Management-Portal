@@ -21,6 +21,13 @@ const RegistrationTokenHistory = () => {
 
   const formatDate = (timestamp: string) => {
     const date = new Date(parseInt(timestamp, 10)); // Convert the timestamp to a number and create a date object
+    const now = new Date(); // Get the current date and time
+
+    // Check if the token expiration date is in the past
+    if (date < now) {
+      return "Expired";
+    }
+
     return date.toLocaleString(); // Return a readable date and time
   };
 
@@ -48,16 +55,16 @@ const RegistrationTokenHistory = () => {
           {data.registrationTokenHistory.map((token: any) => (
             <tr key={token.id} className="odd:bg-gray-800/50">
               {" "}
-              <td className="whitespace-nowrap px-4 py-2 text-gray-200">
+              <td className="whitespace-nowrap px-4 py-2 text-center text-gray-200">
                 {token.email}
               </td>
-              <td className="whitespace-nowrap px-4 py-2 text-gray-200">
+              <td className="whitespace-nowrap px-4 py-2 text-center text-gray-200">
                 {token.name}
               </td>
-              <td className="whitespace-nowrap px-4 py-2 text-gray-200">
+              <td className="whitespace-nowrap px-4 py-2 text-center text-gray-200">
                 {token.isOnboarded ? "Used" : "Unused"}
               </td>
-              <td className="whitespace-nowrap px-4 py-2 text-gray-200">
+              <td className="whitespace-nowrap px-4 py-2 text-center text-gray-200">
                 {formatDate(token.tokenExpiration)}
               </td>
             </tr>

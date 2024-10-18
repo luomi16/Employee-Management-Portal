@@ -26,7 +26,7 @@ const EmployeesPage = () => {
     }
   }, [dispatch, status]);
 
-  // console.log("employees", employees);
+  console.log("employees", employees);
 
   // Filter employees based on search input
   const filteredEmployees = employees.filter((employee: any) =>
@@ -156,9 +156,15 @@ const EmployeesPage = () => {
                             <td className="px-4 py-4 text-sm text-white">
                               {employee.email}
                             </td>
-                            <td className="px-4 py-4 text-sm text-white">
-                              {employee.identity}
-                            </td>
+                            {employee.identity === "OTHER" ? (
+                              <td className="px-4 py-4 text-sm text-white">
+                                {employee.workAuthorization?.visaType || "N/A"}
+                              </td>
+                            ) : (
+                              <td className="px-4 py-4 text-sm text-white">
+                                {employee.identity}
+                              </td>
+                            )}
                           </tr>
                         ))
                     ) : (

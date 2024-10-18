@@ -29,8 +29,16 @@ const EmployeeInfoPage = () => {
     }
   }, [dispatch, employeeId]);
 
+  // const handleApprove = () => {
+  //   if (employee && employee.id) {
+  //     dispatch(updateEmployeeStatus({ id: employee.id, status: "COMPLETED" }));
+  //   }
+  // };
+
   if (status === "loading") return <p>Loading...</p>;
   if (status === "failed") return <p>Error: {error}</p>;
+
+  console.log(employee);
 
   return (
     <section className="main-container">
