@@ -227,18 +227,15 @@ import ESidebar from "@/components/ESidebar";
 const VisaManagementPage = () => {
   const dispatch = useAppDispatch();
   const user = useSelector((state: RootState) => state.user.user);
-  const {
-    documents,
-    loading: documentLoading,
-    error: documentError,
-  } = useSelector((state: RootState) => state.document);
-  const {
-    employeeId,
-    status: employeeStatus,
-    error: employeeError,
-  } = useSelector((state: RootState) => state.employee);
 
-  // Fetch employeeId when user is available and employeeId is not yet loaded
+  const { documents, loading: documentLoading, error: documentError } = useSelector(
+    (state: RootState) => state.document
+  );
+  const { employeeId, status: employeeStatus, error: employeeError } = useSelector(
+    (state: RootState) => state.employee
+  );
+
+
   useEffect(() => {
     if (user && user.id && !employeeId) {
       dispatch(fetchEmployeeIdByUserId(user.id));
@@ -260,13 +257,11 @@ const VisaManagementPage = () => {
       case "PENDING":
         return `Waiting for HR to approve your ${getDisplayName(docType)}`;
       case "APPROVED":
-        if (docType === "OPT_RECEIPT")
-          return "Please upload a copy of your OPT EAD.";
-        if (docType === "OPT_EAD")
-          return "Please download and fill out the I-983 form.";
-        if (docType === "I_983")
-          return "Please send the I-983 along all necessary documents to your school and upload the new I-20.";
-        if (docType === "I_20") return "All documents have been approved.";
+
+        if (docType === "OPT_RECEIPT") return `Approved. Please upload a copy of your OPT EAD.`;
+        if (docType === "OPT_EAD") return `Approved. Please upload your I-983 form.`;
+        if (docType === "I_983") return `Approved. Please upload your I-20.`;
+        if (docType === "I_20") return `All documents have been approved, thank you.`;
         break;
       case "REJECTED":
         return `HR feedback: ${document.feedback}`;
@@ -294,9 +289,9 @@ const VisaManagementPage = () => {
     const index = previousDocs.indexOf(docType);
     if (index === 0) return true;
 
-    const previousDocument = documents.find(
-      (doc) => doc.documentType === previousDocs[index - 1]
-    );
+
+    const previousDocument = getLatestDocument(previousDocs[index - 1]);
+
     return previousDocument && previousDocument.status === "APPROVED";
   };
 
@@ -320,34 +315,41 @@ const VisaManagementPage = () => {
   if (employeeError) return <p>Error: {employeeError}</p>;
 
   return (
-    <main className="flex">
-      <ESidebar />
-      <section className="main-container ml-4">
-        <h1 className="header-text text-3xl font-bold mt-4">
-          Manage Your OPT Documents
-        </h1>
-        {["OPT_RECEIPT", "OPT_EAD", "I_983", "I_20"].map((docType) => (
-          <div key={docType} className="document-section mt-4">
-            <h2 className="text-xl font-semibold">
-              {getDisplayName(docType as DocumentType)}
-            </h2>
-            <p className="mt-2 text-lg">
-              {getDocumentStatusMessage(docType as DocumentType)}
+
+    <section className="main-container">
+      <h1 className="header-text text-3xl font-bold mt-4">Manage Your OPT Documents</h1>
+      {(Object.values(DocumentType) as DocumentType[]).map((docType) => (
+        <div key={docType} className="document-section mt-4">
+          <h2 className="text-xl font-semibold">{getDisplayName(docType)}</h2>
+          <p className="mt-2 text-lg">{getDocumentStatusMessage(docType)}</p>
+          {/* Highlight the file name if the latest document is approved */}
+          {getLatestDocument(docType)?.status === "APPROVED" && (
+            <p className="mt-2 text-sm text-green-500 font-bold">
+              Approved File: {getLatestDocument(docType)?.fileName}
             </p>
-            {canUploadDocument(docType as DocumentType) && (
-              <div className="upload-file-container mt-2">
-                <input
-                  type="file"
-                  onChange={(e) => handleFileUpload(e, docType as DocumentType)}
-                  disabled={documentLoading}
-                />
-              </div>
-            )}
-          </div>
-        ))}
-        {documentError && <p className="text-red-500 mt-4">{documentError}</p>}
-      </section>
-    </main>
+          )}
+          {/* Show the upload input only if the document is not approved */}
+          {canUploadDocument(docType) && !isUploadDisabled(docType) ? (
+            <div className="upload-file-container mt-2">
+              <input
+                type="file"
+                onChange={(e) => handleFileUpload(e, docType)}
+                disabled={isUploadDisabled(docType)}
+                className={isUploadDisabled(docType) ? "bg-gray-300 cursor-not-allowed" : ""}
+              />
+            </div>
+          ) : (
+            <div className="upload-file-container mt-2">
+              <button disabled className="bg-gray-300 cursor-not-allowed px-4 py-2">
+                Choose File
+              </button>
+            </div>
+          )}
+        </div>
+      ))}
+      {documentError && <p className="text-red-500 mt-4">{documentError}</p>}
+    </section>
+
   );
 };
 
