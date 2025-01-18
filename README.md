@@ -1,46 +1,97 @@
 # Employee Management Portal
-This repository build a Next.js application with MongoDB, Prisma, and Next Auth **V5** project.
+
+Welcome to the Employee Management Portal repository! 
+
+This project is a comprehensive employee management system built using modern web technologies such as Next.js, MongoDB, Prisma, and GraphQL. The portal provides functionality for both employees and HR administrators, with features like user authentication, profile management, and visa document uploads.
+
+## Key Technologies
+
+- **Next.js**: Framework for server-side rendering (SSR) and client-side rendering (CSR).
+- **MongoDB**: Database storage solution.
+- **Prisma**: Database ORM for schema management and queries.
+- **Next Auth V5**: User authentication, including registration, login, and logout.
+- **GraphQL**: For efficient, flexible, and type-safe API queries and mutations.
+
+---
 
 ## Features
 
-- Next Auth **V5** with user registration, login, and logout functionality
-- Protected Routes
-- Next.js framework for server-side rendering and client-side rendering
-- MongoDB for database storage
-- Prisma for database ORM
+### General
+- Next Auth V5 integration for secure user authentication.
+- Protected routes to safeguard sensitive pages and resources.
+- GraphQL for API communication, enabling robust and scalable data handling.
+- Zod for form validation to ensure data integrity.
+
+### Employee Features
+- User registration and login.
+- View and update personal information based on the current user ID.
+- Create and edit employee profiles through dynamic forms.
+- Upload and manage documents, including visa files (Visa Management Page).
+- Receive and view notifications.
+- Interactive dashboard displaying personalized data.
+
+### HR Features
+- Comprehensive search functionality for employee records.
+- View employee profiles in detail.
+- Sort employees by last name for easier navigation.
+- Manage employee onboarding status.
+- Oversee employee visa documentation.
+- Dedicated dashboard for HR-specific tasks and metrics.
+
+---
 
 ## Getting Started
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Set up your environment variables by creating a `.env` `or` `.env.local` file based on the `.env.example` file.
-4. Generate and DB Push Prisma Client
-```bash
-npx prisma generate
-npx prisma db push
-```
-5. Start the development server: `npm run dev`
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/luomi16/Employee-Management-Portal
+   ```
 
-## What you need to know
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-- `auth.config.ts` `&&` `app/lib/actions.ts` handles auth logic
-- `/lib/form-schemas.ts` zod for form validation
-- `middleware.ts` handles protected routes
+3. **Set Up Environment Variables**:
+   Create a `.env` file using the provided `.env.example` file as a reference.
 
-## To Do List
-- employee
-    - signin, signup
-    - fix get personal info by current user id
-    - create, edit employee form
-    - document upload (visa management page)
-    - notification
-    - dashboard
+4. **Initialize Prisma**:
+   Generate the Prisma client and push the database schema:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
 
-- hr
-    - search
-    - employee profile list page
-    - view employee profile
-    - sort employee by lastname
-    - manage employee onboardingstatus
-    - manage employee visa
-    - dashboard
+5. **Start the Development Server**:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## Project Structure Highlights
+
+- **Authentication Logic**: Managed in `auth.config.ts` and `app/lib/actions.ts`.
+- **Form Validation**: Handled via Zod in `/lib/form-schemas.ts`.
+- **Route Protection**: Middleware configuration in `middleware.ts`.
+
+---
+
+## Employee Management Features Overview
+
+### Employees
+- **Sign In / Sign Up**: Secure user authentication.
+- **Personal Info**: Access and edit personal details by user ID.
+- **Employee Form**: Create and edit employee-specific forms.
+- **Document Management**: Upload and manage visa-related documents.
+- **Notifications**: Receive updates and alerts.
+- **Dashboard**: Overview of key metrics and activities.
+
+### HR Administrators
+- **Search Employees**: Find employee records efficiently.
+- **Employee Profiles**: View and sort profiles.
+- **Onboarding Management**: Track onboarding progress.
+- **Visa Management**: Oversee visa documentation and updates.
+- **HR Dashboard**: Access tools and data specific to HR roles.
+
+---
